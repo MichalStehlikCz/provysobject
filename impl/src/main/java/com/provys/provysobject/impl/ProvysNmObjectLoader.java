@@ -5,9 +5,10 @@ import com.provys.provysobject.ProvysNmObject;
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public interface ProvysNmObjectLoader<V extends ProvysNmObjectValue, O extends ProvysNmObject,
-        M extends ProvysNmObjectManagerImpl<?, V, O, ?, ?>, P extends ProvysNmObjectProxy<V, O, M>>
-        extends ProvysObjectLoader<V, O, M, P> {
+@SuppressWarnings("WeakerAccess") // extended when implementing support for particular entities in other packages
+public interface ProvysNmObjectLoader<O extends ProvysNmObject, V extends ProvysNmObjectValue,
+        P extends ProvysNmObjectProxy<O, V>, M extends ProvysNmObjectManagerInt<O, V, P>>
+        extends ProvysObjectLoader<O, V, P, M> {
 
     @Nonnull
     Optional<O> loadByNameNm(M manager, String nameNm);

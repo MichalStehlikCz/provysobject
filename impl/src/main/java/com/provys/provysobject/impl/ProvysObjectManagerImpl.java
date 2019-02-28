@@ -1,8 +1,9 @@
 package com.provys.provysobject.impl;
 
 import com.provys.common.exception.InternalException;
+import com.provys.common.exception.RegularException;
 import com.provys.provysobject.ProvysObject;
-import com.provys.provysobject.ProvysObjectManager;
+import com.provys.provysobject.ProvysRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,10 +11,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Gives access to objects of given type, holds objects and ensures there is only one instance for each Id. Keeps
@@ -26,15 +28,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * It is up to manager to decide if data should be kept in index or index entries are released and loader is used to
  * retrieve appropriate objects.
  *
- * @param <R>
- * @param <V>
- * @param <T>
- * @param <L>
+ * @param <R> is repository containing given manager. Repository enables crossing entity boundaries - objects within
+ *          same repository can reference each other and references are resolved via repository during load time. It
+ *           is common for all object managers to keep reference to repository and thus is included here, even though
+ *           no other functionality is required of repository on this level
+ * @param <V> is value object representing given entity; object manager gets old and new values on object updates to
+ *           maintain indices
+ * @param <P> proxy type, implementing incremental load for given object interface
+ * @param <L> is loader used to verify object existence and load values to objects in repository
  */
-abstract public class ProvysObjectManagerImpl<R extends ProvysRepositoryImpl, V extends ProvysObjectValue,
-        O extends ProvysObject, M extends ProvysObjectManagerImpl<R, V, O, ?, ?>,
-        L extends ProvysObjectLoader<V, O, M, ? extends ProvysObjectProxy<V, O, M>>>
-        implements ProvysObjectManager<O> {
+public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O extends ProvysObject,
+        V extends ProvysObjectValue, P extends ProvysObjectProxy<O, V>, M extends ProvysObjectManagerInt<O, V, P>,
+        L extends ProvysObjectLoader<O, V, P, M>>
+        implements ProvysObjectManagerInt<O, V, P> {
 
     @Nonnull
     private static final Logger LOG = LogManager.getLogger(ProvysObjectManagerImpl.class);
@@ -45,7 +51,7 @@ abstract public class ProvysObjectManagerImpl<R extends ProvysRepositoryImpl, V 
     private final L loader;
 
     @Nonnull
-    private final Map<BigInteger, O> provysObjectById;
+    private final Map<BigInteger, P> provysObjectById;
 
     ProvysObjectManagerImpl(R repository, L loader, int initialCapacity) {
         this.repository = Objects.requireNonNull(repository);
@@ -54,8 +60,9 @@ abstract public class ProvysObjectManagerImpl<R extends ProvysRepositoryImpl, V 
     }
 
     @Nonnull
-    abstract protected M self();
+    protected abstract M self();
 
+    @SuppressWarnings("WeakerAccess") // method can be used by loader or proxy subclasses
     @Nonnull
     public R getRepository() {
         return repository;
@@ -66,30 +73,36 @@ abstract public class ProvysObjectManagerImpl<R extends ProvysRepositoryImpl, V 
         return loader;
     }
 
-    /**
-     * @return internal name of entity this manager belongs to. Used in error messages
-     */
-    @Nonnull
-    abstract public String getEntityNm();
-
     @Nonnull
     @Override
     public O getById(BigInteger id) {
-        O provysObject = provysObjectById.get(Objects.requireNonNull(id));
-        if (provysObject == null) {
-            provysObject = getLoader().loadById(self(), id);
+        return getByIdIfExists(id).
+                orElseThrow(() -> new RegularException(LOG, "JAVA_MANAGER_OBJECT_NOT_FOUND",
+                        getEntityNm() + " not found by id: " + id,
+                        Map.of("ENTITY_NM", getEntityNm(), "ID", id.toString())));
+    }
+
+    @Nonnull
+    @Override
+    public Optional<O> getByIdIfExists(BigInteger id) {
+        P provysObject = provysObjectById.get(Objects.requireNonNull(id));
+        if (provysObject != null) {
+            // object found in cache
+            return Optional.of(provysObject.selfAsObject());
         }
-        return provysObject;
+        // object has to be loaded
+        return getLoader().loadById(self(), id).map(ProvysObjectProxy::selfAsObject);
     }
 
     @Nonnull
     @Override
     public Collection<O> getAll() {
         getLoader().loadAll(self());
-        return Collections.unmodifiableCollection(provysObjectById.values());
+        return provysObjectById.values().stream().map(ProvysObjectProxy::selfAsObject).collect(Collectors.toList());
     }
 
-    abstract protected O getNewProxy(BigInteger id);
+    @Nonnull
+    protected abstract P getNewProxy(BigInteger id);
 
     /**
      * Retrieve entity group if already loaded to cache, otherwise create new proxy for given id. Should only be called
@@ -98,9 +111,30 @@ abstract public class ProvysObjectManagerImpl<R extends ProvysRepositoryImpl, V 
      * @param id is Id of entity group being looked for
      * @return entity group present in cache or newly added proxy
      */
-    public O getOrAddById(BigInteger id) {
+    @Nonnull
+    @Override
+    public P getOrAddById(BigInteger id) {
         return provysObjectById.computeIfAbsent(Objects.requireNonNull(id), this::getNewProxy);
     }
+
+    /**
+     * Use loader to load value to proxy
+     */
+    @Override
+    public void loadValueObject(P objectProxy) {
+        getLoader().loadValue(self(), objectProxy);
+    }
+
+    /**
+     * Does actual updating of indices.
+     * Called from registerChange in case proxy is found to be registered in this manager.
+     *
+     * @param provysObject is proxy to object to be registered
+     * @param oldValue are old values associated with object
+     * @param newValue are new values associated with object
+     */
+    @SuppressWarnings("WeakerAccess") // method needs to be overloaded in subclasses
+    protected void doRegisterChange(P provysObject, @Nullable V oldValue, @Nullable V newValue) {}
 
     /**
      * Register given object in indices. Verifies that object proxy has been previously registered for its id, if not,
@@ -110,9 +144,13 @@ abstract public class ProvysObjectManagerImpl<R extends ProvysRepositoryImpl, V 
      * @param oldValue are old values associated with object
      * @param newValue are new values associated with object
      */
-    void registerChange(O provysObject, @Nullable V oldValue, @Nullable V newValue) {
-        if (provysObjectById.get(provysObject.getId()) != provysObject) {
-            throw new InternalException(LOG, "Register change called on unregistered object proxy");
+    @Override
+    public void registerChange(P provysObject, @Nullable V oldValue, @Nullable V newValue) {
+        if (provysObjectById.get(provysObject.getId()) == provysObject) {
+            doRegisterChange(provysObject, oldValue, newValue);
+        } else {
+            throw new InternalException(LOG,
+                    "Register change " + getEntityNm() + " called on unregistered object proxy");
         }
     }
 
@@ -120,7 +158,8 @@ abstract public class ProvysObjectManagerImpl<R extends ProvysRepositoryImpl, V 
      * Remove given object. Used as reaction to delete. Note that even if references are removed from indices,
      * there might still be objects that retain reference and thus might stumble across invalid object proxy
      */
-    void unregister(O provysObject, @Nullable V oldValue) {
+    @Override
+    public void unregister(P provysObject, @Nullable V oldValue) {
         // remove from additional indices
         if (oldValue != null) {
             registerChange(provysObject, oldValue, null);

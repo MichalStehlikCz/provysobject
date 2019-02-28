@@ -5,7 +5,8 @@ import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.Objects;
 
-abstract public class ProvysNmObjectValue extends ProvysObjectValue {
+@SuppressWarnings("WeakerAccess") // class used as basis for subclassing in other packages
+public abstract class ProvysNmObjectValue extends ProvysObjectValue {
 
     @Nonnull
     private final String nameNm;

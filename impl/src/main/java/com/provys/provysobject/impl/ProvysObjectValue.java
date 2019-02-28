@@ -9,7 +9,8 @@ import java.util.Objects;
  * Immutable value class holding values of properties of given PROVYS object.
  * Created by corresponding loader and used internally by given proxy.
  */
-abstract public class ProvysObjectValue {
+@SuppressWarnings("WeakerAccess") // basis for subclassing in other packages
+public abstract class ProvysObjectValue {
 
     @Nonnull
     private final BigInteger id;

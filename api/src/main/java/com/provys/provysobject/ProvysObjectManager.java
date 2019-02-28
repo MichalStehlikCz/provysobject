@@ -3,18 +3,35 @@ package com.provys.provysobject;
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Optional;
+
+import com.provys.common.exception.RegularException;
 
 public interface ProvysObjectManager<T extends ProvysObject> {
     /**
-     * Retrieve entity group from repository using supplied UID. Try to load entity group from database if not present
-     * in cache
+     * Retrieve internal name of PROVYS entity, managed by this manager
+     */
+    @Nonnull
+    String getEntityNm();
+
+    /**
+     * Retrieve object from cache using supplied UID. Try to load object from database if not present in cache
      *
-     * @param id is id of entity group to be retrieved
-     * @return entity group with specified id
-     * @throws RuntimeException if entity group with given id is not found
+     * @param id is id of object to be retrieved
+     * @return object with specified id
+     * @throws RegularException JAVA_MANAGER_OBJECT_NOT_FOUND if object with given id is not found
      */
     @Nonnull
     T getById(BigInteger id);
+
+    /**
+     * Retrieve object from cache using supplied UID. Try to load object from database if not present in cache
+     *
+     * @param id is id of object to be retrieved
+     * @return object with specified id, empty {@code Optional} if object doesn't exist or is of different type
+     */
+    @Nonnull
+    Optional<T> getByIdIfExists(BigInteger id);
 
     /**
      * Retrieve all entity groups. Load all entity groups from database to cache
