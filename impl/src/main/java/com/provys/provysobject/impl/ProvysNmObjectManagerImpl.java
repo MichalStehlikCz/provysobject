@@ -59,8 +59,8 @@ public abstract class ProvysNmObjectManagerImpl<R extends ProvysRepository, O ex
     }
 
     @Override
-    protected void doRegisterChange(P provysObject, @Nullable V oldValue, @Nullable V newValue) {
-        super.doRegisterChange(provysObject, oldValue, newValue);
+    protected void doRegisterChange(P provysObject, @Nullable V oldValue, @Nullable V newValue, boolean deleted) {
+        super.doRegisterChange(provysObject, oldValue, newValue, deleted);
         // change of nameNm
         if ((oldValue != null) && ((newValue == null) || (!oldValue.getNameNm().equals(newValue.getNameNm())))) {
             // remove old value

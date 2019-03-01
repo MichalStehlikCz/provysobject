@@ -30,12 +30,12 @@ class ProvysObjectProxyImplTest {
         var proxy = new TestObjectProxyImpl(manager, BigInteger.valueOf(4));
         assertThat(proxy.getValueObject()).isEmpty();
         var value1 = new TestObjectValue(BigInteger.valueOf(4), "VALUE1");
-        verify(manager, times(0)).registerChange(any(), any(), any());
+        verify(manager, times(0)).registerChange(any(), any(), any(), anyBoolean());
         proxy.setValueObject(value1);
-        verify(manager).registerChange(proxy, null, value1);
+        verify(manager).registerChange(proxy, null, value1, false);
         var value2 = new TestObjectValue(BigInteger.valueOf(4), "VALUE2");
         proxy.setValueObject(value2);
-        verify(manager).registerChange(proxy, value1, value2);
+        verify(manager).registerChange(proxy, value1, value2, false);
     }
 
     @Test

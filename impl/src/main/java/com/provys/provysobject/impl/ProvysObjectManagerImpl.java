@@ -133,22 +133,20 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
      * @param provysObject is proxy to object to be registered
      * @param oldValue are old values associated with object
      * @param newValue are new values associated with object
+     * @param deleted indicates if object represented by proxy has been removed from database or proxy is only released
+     *               because it is not current or cache grown too big
      */
     @SuppressWarnings("WeakerAccess") // method needs to be overloaded in subclasses
-    protected void doRegisterChange(P provysObject, @Nullable V oldValue, @Nullable V newValue) {}
+    protected void doRegisterChange(P provysObject, @Nullable V oldValue, @Nullable V newValue, boolean deleted) {}
 
     /**
      * Register given object in indices. Verifies that object proxy has been previously registered for its id, if not,
-     * throws exception
-     *
-     * @param provysObject is proxy to object to be registered
-     * @param oldValue are old values associated with object
-     * @param newValue are new values associated with object
+     * throws exception and ten defers change registration to doRegisterChange method
      */
     @Override
-    public void registerChange(P provysObject, @Nullable V oldValue, @Nullable V newValue) {
+    public void registerChange(P provysObject, @Nullable V oldValue, @Nullable V newValue, boolean deleted) {
         if (provysObjectById.get(provysObject.getId()) == provysObject) {
-            doRegisterChange(provysObject, oldValue, newValue);
+            doRegisterChange(provysObject, oldValue, newValue, deleted);
         } else {
             throw new InternalException(LOG,
                     "Register change " + getEntityNm() + " called on unregistered object proxy");
@@ -160,10 +158,10 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
      * there might still be objects that retain reference and thus might stumble across invalid object proxy
      */
     @Override
-    public void unregister(P provysObject, @Nullable V oldValue) {
+    public void unregister(P provysObject, @Nullable V oldValue, boolean deleted) {
         // remove from additional indices
         if (oldValue != null) {
-            registerChange(provysObject, oldValue, null);
+            registerChange(provysObject, oldValue, null, deleted);
         }
         // remove from primary index
         var oldProvysObject = provysObjectById.remove(provysObject.getId());

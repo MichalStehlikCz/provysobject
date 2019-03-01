@@ -74,14 +74,16 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
         if (deleted) {
             throw new InternalException(LOG, "Cannot set value of deleted " + getManager().getEntityNm() + " proxy");
         }
-        var oldValue = this.valueObject;
-        this.valueObject = valueObject;
-        getManager().registerChange(self(), oldValue, valueObject);
+        if (this.valueObject != valueObject) {
+            var oldValue = this.valueObject;
+            this.valueObject = valueObject;
+            getManager().registerChange(self(), oldValue, valueObject, false);
+        }
     }
 
     @Override
     public synchronized void deleted() {
-        getManager().unregister(self(), this.valueObject);
+        getManager().unregister(self(), this.valueObject, true);
         this.valueObject = null;
         this.deleted = true;
     }
