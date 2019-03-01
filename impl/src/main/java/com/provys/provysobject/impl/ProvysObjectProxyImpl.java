@@ -82,6 +82,14 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     }
 
     @Override
+    public synchronized void discardValueObject() {
+        if (deleted) {
+            throw new InternalException(LOG, "Cannot discard value of deleted " + getManager().getEntityNm() + " proxy");
+        }
+
+    }
+
+    @Override
     public synchronized void deleted() {
         getManager().unregister(self(), this.valueObject, true);
         this.valueObject = null;
