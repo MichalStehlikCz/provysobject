@@ -53,7 +53,8 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
     @Nonnull
     private final Map<BigInteger, P> provysObjectById;
 
-    ProvysObjectManagerImpl(R repository, L loader, int initialCapacity) {
+    @SuppressWarnings("WeakerAccess") // class is used for subclassing in other packages
+    public ProvysObjectManagerImpl(R repository, L loader, int initialCapacity) {
         this.repository = Objects.requireNonNull(repository);
         this.loader = Objects.requireNonNull(loader);
         this.provysObjectById = new ConcurrentHashMap<>(initialCapacity);

@@ -46,7 +46,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     private V valueObject;
     private boolean deleted = false;
 
-    ProvysObjectProxyImpl(M manager, BigInteger id) {
+    public ProvysObjectProxyImpl(M manager, BigInteger id) {
         this.manager = Objects.requireNonNull(manager);
         this.id = Objects.requireNonNull(id);
     }
