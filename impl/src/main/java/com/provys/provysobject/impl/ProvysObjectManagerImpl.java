@@ -52,8 +52,6 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
 
     @Nonnull
     private final Map<BigInteger, P> provysObjectById;
-    @Nonnull
-    private final List<>
 
     @SuppressWarnings("WeakerAccess") // class is used for subclassing in other packages
     public ProvysObjectManagerImpl(R repository, L loader, int initialCapacity) {
@@ -143,10 +141,10 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
 
     /**
      * Register given object in indices. Verifies that object proxy has been previously registered for its id, if not,
-     * throws exception and ten defers change registration to doRegisterChange method
+     * throws exception, otherwise defers change registration to doRegisterChange method
      */
     @Override
-    public void registerChange(P provysObject, @Nullable V oldValue, @Nullable V newValue, boolean deleted) {
+    public void registerUpdate(P provysObject, @Nullable V oldValue, @Nullable V newValue, boolean deleted) {
         if (provysObjectById.get(provysObject.getId()) == provysObject) {
             doRegisterChange(provysObject, oldValue, newValue, deleted);
         } else {

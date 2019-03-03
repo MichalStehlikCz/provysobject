@@ -32,7 +32,7 @@ interface ProvysObjectManagerInt<O extends ProvysObject, V extends ProvysObjectV
      *                or if such indices should be marked as partial because lifted value might still be valid in
      *                database and will now be missing from index
      */
-    void registerChange(P objectProxy, @Nullable V oldValue, @Nullable V newValue, boolean deleted);
+    void registerUpdate(P objectProxy, @Nullable V oldValue, @Nullable V newValue, boolean deleted);
 
     /**
      * Remove given object. Used as reaction to delete or when proxy is to be released because cache has grown too big.

@@ -6,21 +6,6 @@ import com.provys.provysobject.impl.ProvysObjectValue;
 import javax.annotation.Nullable;
 
 public interface Index<V extends ProvysObjectValue, P extends ProvysObjectProxy<?, V>> {
-    /**
-     * Called when new value is being added to indexed table. Indexes value if returned column is non-null
-     *
-     * @param proxy is proxy to object being indexed
-     * @param value is value to be indexed
-     */
-    void add(P proxy, V value);
-
-    /**
-     * Called when value is to be removed from index
-     *
-     * @param proxy is indexed proxy object
-     * @param value is value to be indexed
-     */
-    void remove(P proxy, V value);
 
     /**
      * Called when proxy value changes
@@ -30,4 +15,13 @@ public interface Index<V extends ProvysObjectValue, P extends ProvysObjectProxy<
      * @param newValue is new value associated with proxy
      */
     void update(P proxy, @Nullable V oldValue, @Nullable V newValue);
+
+    /**
+     * Called when summary information is invalidated - e.g. we got notification about change in database but we did not
+     * imported all new objects and their current values or when values are removed from proxy or proxy is released to
+     * save space. An further queries performed unique id will be still performed against index first and only misses go
+     * against database, but any non-unique queries go to database first and thus indices supporting only such searches
+     * (e.g. on non-unique value) make no sense and should be discarded
+     */
+    void unknownUpdate();
 }

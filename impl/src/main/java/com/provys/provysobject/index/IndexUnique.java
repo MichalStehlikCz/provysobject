@@ -5,12 +5,13 @@ import com.provys.provysobject.impl.ProvysObjectValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class IndexUnique<V extends ProvysObjectValue, P extends ProvysObjectProxy<?, V>, C> {
+public class IndexUnique<V extends ProvysObjectValue, P extends ProvysObjectProxy<?, V>, C> implements Index<V, P> {
 
     private static final Logger LOG = LogManager.getLogger(IndexUnique.class);
 
@@ -24,9 +25,7 @@ public class IndexUnique<V extends ProvysObjectValue, P extends ProvysObjectProx
         this.attrFunction = Objects.requireNonNull(attrFunction);
     }
 
-    public void add(P proxy, V value) {
-        var attrValue = attrFunction.apply(value);
-        if (attrValue != null) {
+    private void add(P proxy, C attrValue) {
             var old = map.put(attrValue, proxy);
             if (old != null) {
                 // this is not completely kosher - while usually we remove from index old object that should have been
@@ -38,14 +37,31 @@ public class IndexUnique<V extends ProvysObjectValue, P extends ProvysObjectProx
                         name, old.getId(), proxy.getId());
                 old.discardValueObject();
             }
-        }
     }
 
-    public void remove(P proxy, V value) {
-        var attrValue = attrFunction.apply(value);
-        if ((attrValue != null) && !map.remove(attrValue, proxy)) {
+    private void remove(P proxy, C attrValue) {
+        if (!map.remove(attrValue, proxy)) {
             LOG.warn("Failed to remove value {} from index {} - not present or associated with different proxy",
                     attrValue, name);
         }
+    }
+
+    @Override
+    public void update(P proxy, @Nullable V oldValue, @Nullable V newValue) {
+        C oldAttrValue = attrFunction.apply(oldValue);
+        C newAttrValue = attrFunction.apply(newValue);
+        if (oldAttrValue != newAttrValue) {
+            if (oldAttrValue != null) {
+                remove(proxy, oldAttrValue);
+            }
+            if (newAttrValue != null) {
+                add(proxy, newAttrValue);
+            }
+        }
+    }
+
+    @Override
+    public void unknownUpdate() {
+        // index is still usable because it is used for unique look-ups, no action needed
     }
 }
