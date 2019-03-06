@@ -19,6 +19,26 @@ import static org.mockito.Mockito.*;
 class ProvysObjectProxyImplTest {
 
     @Test
+    @SuppressWarnings("squid:S2925") // just wanted to ensure time have some room for change...
+    void getLastUsed() {
+        var manager = mock(TestObjectManagerImpl.class);
+        var proxy = new TestObjectProxyImpl(manager, BigInteger.valueOf(5));
+        long lowerBound = System.currentTimeMillis();
+        try {
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted during sleep", e);
+        }
+        proxy.setLastUsed();
+        try {
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted during sleep", e);
+        }
+        assertThat(proxy.getLastUsed()).isBetween(lowerBound, System.currentTimeMillis());
+    }
+
+    @Test
     void getManagerTest() {
         var manager = mock(TestObjectManagerImpl.class);
         assertThat(new TestObjectProxyImpl(manager, BigInteger.valueOf(5)).getManager()).isSameAs(manager);
@@ -30,12 +50,16 @@ class ProvysObjectProxyImplTest {
         var proxy = new TestObjectProxyImpl(manager, BigInteger.valueOf(4));
         assertThat(proxy.getValueObject()).isEmpty();
         var value1 = new TestObjectValue(BigInteger.valueOf(4), "VALUE1");
-        verify(manager, times(0)).registerChange(any(), any(), any(), anyBoolean());
+        verify(manager, times(0)).registerUpdate(any(), any(), any());
         proxy.setValueObject(value1);
-        verify(manager).registerChange(proxy, null, value1, false);
+        verify(manager).registerUpdate(proxy, null, value1);
         var value2 = new TestObjectValue(BigInteger.valueOf(4), "VALUE2");
         proxy.setValueObject(value2);
-        verify(manager).registerChange(proxy, value1, value2, false);
+        verify(manager).registerUpdate(proxy, value1, value2);
+        assertThat(proxy.getValueObject()).containsSame(value2);
+        proxy.discardValueObject();
+        verify(manager).registerUpdate(proxy, value2, null);
+        assertThat(proxy.getValueObject()).isEmpty();
     }
 
     @Test
@@ -47,9 +71,22 @@ class ProvysObjectProxyImplTest {
         assertThat(proxy.isDeleted()).isTrue();
         assertThatThrownBy(proxy::getValue).isInstanceOf(InternalException.class).hasMessageContaining("deleted");
         assertThatThrownBy(proxy::getId).isInstanceOf(InternalException.class).hasMessageContaining("deleted");
+        assertThatThrownBy(proxy::discardValueObject).isInstanceOf(InternalException.class).
+                hasMessageContaining("deleted");
         var value1 = new TestObjectValue(BigInteger.valueOf(5), "test");
         assertThatThrownBy(() -> proxy.setValueObject(value1)).isInstanceOf(InternalException.class).
                 hasMessageContaining("deleted");
+    }
+
+    @Test
+    void validateValueObjectTest() {
+        var manager = mock(TestObjectManagerImpl.class);
+        var proxy = new TestObjectProxyImpl(manager, BigInteger.valueOf(4));
+        assertThatThrownBy(proxy::validateValueObject).isInstanceOf(InternalException.class).
+                hasMessageContaining("value is empty");
+        var value = new TestObjectValue(BigInteger.valueOf(4), "Test");
+        proxy.setValueObject(value);
+        assertThat(proxy.validateValueObject()).isEqualTo(value);
     }
 
     @Nonnull

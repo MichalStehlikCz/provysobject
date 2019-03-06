@@ -13,6 +13,17 @@ public interface ProvysObjectProxy<O extends ProvysObject, V extends ProvysObjec
     O selfAsObject();
 
     /**
+     * @return timestamp when proxy was last referenced / used
+     */
+    long getLastUsed();
+
+    /**
+     * Set last used timestamp. Can be used when looking for items that can be released, because they has not been used
+     * for a long time
+     */
+    void setLastUsed();
+
+    /**
      * Set value object in this proxy. Method should only be invoked by appropriate loader or updater (but must be
      * published as loader is often implemented in different package)
      *
@@ -32,9 +43,4 @@ public interface ProvysObjectProxy<O extends ProvysObject, V extends ProvysObjec
      */
     void deleted();
 
-    /**
-     * Set last used timestamp. Can be used when looking for items that can be released, because they has not been used
-     * for a long time
-     */
-    void setLastUsed();
 }

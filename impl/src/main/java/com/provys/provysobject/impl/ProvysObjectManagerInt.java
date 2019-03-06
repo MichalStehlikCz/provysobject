@@ -27,22 +27,32 @@ interface ProvysObjectManagerInt<O extends ProvysObject, V extends ProvysObjectV
      * @param objectProxy is proxy to object to be registered
      * @param oldValue are old values associated with object
      * @param newValue are new values associated with object
-     * @param deleted indicates if underlying object has ben deleted from database; used to determine if indices
-     *               marked as fully cached containing this value should still be considered valid after value removal,
-     *                or if such indices should be marked as partial because lifted value might still be valid in
-     *                database and will now be missing from index
      */
-    void registerUpdate(P objectProxy, @Nullable V oldValue, @Nullable V newValue, boolean deleted);
+    void registerUpdate(P objectProxy, @Nullable V oldValue, @Nullable V newValue);
 
     /**
-     * Remove given object. Used as reaction to delete or when proxy is to be released because cache has grown too big.
-     * Note that even if references are removed from indices, there might still be objects that retain reference and
-     * thus might stumble across invalid object proxy
+     * Register that object was deleted from database and it should be removed from object manager.
+     *
+     * @param objectProxy is proxy object being removed
+     * @param oldValue are old values associated with object
+     */
+    void registerDelete(P objectProxy, @Nullable V oldValue);
+
+    /**
+     * Remove given object. Used when proxy is to be released because cache has grown too big. Note that even if
+     * references are removed from indices, there might still be objects that retain reference and thus might stumble
+     * across invalid object proxy. Call invalidates all sets that contained given object because they are no longer
+     * complete
      *
      * @param objectProxy is proxy being removed from manager
      * @param oldValue is original value associated with proxy (it is directly passed to this method, as state of proxy
      *                at this moment is undefined)
-     * @param deleted indicates if underlying object has ben deleted from database
      */
-    void unregister(P objectProxy, @Nullable V oldValue, boolean deleted);
+    void unregister(P objectProxy, @Nullable V oldValue);
+
+    /**
+     * Should be called when database reports update but object is not kept in cache. Invalidates all sets, as it is not
+     * clear to which sets updated object should belong without validating it
+     */
+    void registerUnknownUpdate();
 }

@@ -64,17 +64,17 @@ class ProvysNmObjectManagerImplTest {
         var manager = new TestNmObjectManagerImpl(repository, loader);
         var proxy5 = manager.getOrAddById(BigInteger.valueOf(5));
         var value5 = new TestNmObjectValue(BigInteger.valueOf(5), "NM5", "text");
-        manager.registerChange(proxy5,  null, value5, false);
+        manager.registerUpdate(proxy5,  null, value5);
         assertThat(manager.getByNameNm("NM5")).isSameAs(proxy5);
         verify(loader, times(0)).loadByNameNm(any(), any());// should be in index after register
-        manager.registerChange(proxy5, value5, null, false);
+        manager.registerUpdate(proxy5, value5, null);
         assertThat(manager.getByNameNm("NM5")).isSameAs(proxy5); // loader should match it by id
         verify(loader, times(1)).loadByNameNm(any(), any()); // value was not in index and had
                                                                                      // to be loaded
-        manager.unregister(proxy5, proxy5.getValueObject().orElse(null), true);
+        manager.unregister(proxy5, proxy5.getValueObject().orElse(null));
         assertThat(manager.getByNameNm("NM5")).isNotSameAs(proxy5).isEqualTo(proxy5); // after un-registration, we
                                       // should get new proxy, but this proxy will be initialized to same id in loader
-        assertThatThrownBy(() -> manager.registerChange(proxy5, null, null, false)).
+        assertThatThrownBy(() -> manager.registerUpdate(proxy5, null, null)).
                 isInstanceOf(InternalException.class); // should fail as proxy5 is no longer registered
     }
 }

@@ -1,19 +1,24 @@
 package com.provys.provysobject.impl;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.util.Objects;
+import java.util.Optional;
 
-class TestNmObjectValue extends ProvysNmObjectValue {
+public class TestNmObjectValue extends ProvysNmObjectValue {
 
+    @Nullable
     private final String value;
 
-    TestNmObjectValue(BigInteger id, String nameNm, String value) {
+    public TestNmObjectValue(BigInteger id, String nameNm, @Nullable String value) {
         super(id, nameNm);
-        this.value = Objects.requireNonNull(value);
+        this.value = value;
     }
 
-    String getValue() {
-        return value;
+    @Nonnull
+    public Optional<String> getValue() {
+        return Optional.ofNullable(value);
     }
 
     @Override

@@ -5,63 +5,104 @@ import com.provys.provysobject.impl.ProvysObjectValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class IndexUnique<V extends ProvysObjectValue, P extends ProvysObjectProxy<?, V>, C> implements Index<V, P> {
+/**
+ * Unique index can be used for lookup of item based on indexed attribute value.
+ *
+ * @param <V> is object value class
+ * @param <P> is proxy class, corresponding to value class V
+ * @param <C> is class representing values of indexed attribute
+ */
+public final class IndexUnique<V extends ProvysObjectValue, P extends ProvysObjectProxy<?, V>, C> extends IndexBase<V, P>
+        implements Index<V, P> {
 
     private static final Logger LOG = LogManager.getLogger(IndexUnique.class);
 
-    private final String name;
-    private final Map<C, P> map;
     private final Function<V, C> attrFunction;
+    private final Map<C, P> map;
 
     public IndexUnique(String name, Function<V, C> attrFunction, int initialCapacity) {
-        this.name = Objects.requireNonNull(name);
-        this.map = new ConcurrentHashMap<>(initialCapacity);
+        super(name);
         this.attrFunction = Objects.requireNonNull(attrFunction);
+        this.map = new ConcurrentHashMap<>(initialCapacity);
     }
 
-    private void add(P proxy, C attrValue) {
+    /**
+     * Add value to index. Internal method that takes actual value of indexed property as input
+     *
+     * @param proxy is indexed proxy object
+     * @param attrValue is value to be indexed
+     */
+    private void addAttrValue(P proxy, C attrValue) {
             var old = map.put(attrValue, proxy);
             if (old != null) {
                 // this is not completely kosher - while usually we remove from index old object that should have been
-                // updated and nce it gets updated, it will be ok, there is risk that even though we are in process of
-                // loading value, we were delayed and other thread got ahead of us and we now remove newer value.
-                // We would probably need to keep COMMITSCN to be able to resolve which object is newer and discard
-                // older one...
+                // updated and once it gets updated, it will be ok (we will just get warning that it was not found),
+                // there is risk that even though we are in process of loading value, we were delayed and other thread
+                // got ahead of us and we now remove newer value.
+                // We would probably need to keep COMMITSCN on value to be able to resolve which object is newer and
+                // discard older one... but we do not have one now
                 LOG.warn("Conflict with value {} in unique index {}, old object Id {}, new {}", attrValue,
-                        name, old.getId(), proxy.getId());
+                        getName(), old.getId(), proxy.getId());
                 old.discardValueObject();
             }
     }
 
-    private void remove(P proxy, C attrValue) {
+    /**
+     * Remove value from index. Internal method that takes actual value of indexed property as input
+     *
+     * @param proxy is indexed proxy object
+     * @param attrValue is value to be removed
+     */
+    private void removeAttrValue(P proxy, C attrValue) {
         if (!map.remove(attrValue, proxy)) {
             LOG.warn("Failed to remove value {} from index {} - not present or associated with different proxy",
-                    attrValue, name);
+                    attrValue, getName());
         }
     }
 
     @Override
     public void update(P proxy, @Nullable V oldValue, @Nullable V newValue) {
-        C oldAttrValue = attrFunction.apply(oldValue);
-        C newAttrValue = attrFunction.apply(newValue);
+        C oldAttrValue = (oldValue == null) ? null : attrFunction.apply(oldValue);
+        C newAttrValue = (newValue == null) ? null : attrFunction.apply(newValue);
         if (oldAttrValue != newAttrValue) {
             if (oldAttrValue != null) {
-                remove(proxy, oldAttrValue);
+                removeAttrValue(proxy, oldAttrValue);
             }
             if (newAttrValue != null) {
-                add(proxy, newAttrValue);
+                addAttrValue(proxy, newAttrValue);
             }
+        }
+    }
+
+    @Override
+    public void delete(P proxy, V value) {
+        C attrValue = attrFunction.apply(Objects.requireNonNull(value));
+        if (attrValue != null) {
+            removeAttrValue(proxy, attrValue);
         }
     }
 
     @Override
     public void unknownUpdate() {
         // index is still usable because it is used for unique look-ups, no action needed
+    }
+
+    /**
+     * Retrieve (proxy) object, associated with given attribute value. This is the method index is created for ;)
+     *
+     * @param attrValue is value being searched
+     * @return proxy object associated with value, empty optional if suc h object does not exist
+     */
+    @Nonnull
+    public Optional<P> get(C attrValue) {
+        return Optional.ofNullable(map.get(attrValue));
     }
 }

@@ -4,15 +4,14 @@ import com.provys.common.exception.RegularException;
 import com.provys.provysobject.ProvysNmObject;
 import com.provys.provysobject.ProvysNmObjectManager;
 import com.provys.provysobject.ProvysRepository;
+import com.provys.provysobject.index.IndexUnique;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("WeakerAccess") // class used as basis for subclassing in other packages
 public abstract class ProvysNmObjectManagerImpl<R extends ProvysRepository, O extends ProvysNmObject,
@@ -25,11 +24,13 @@ public abstract class ProvysNmObjectManagerImpl<R extends ProvysRepository, O ex
     private static final Logger LOG = LogManager.getLogger(ProvysNmObjectManagerImpl.class);
 
     @Nonnull
-    private final Map<String, O> provysObjectByNameNm;
+    private final IndexUnique<V, P, String> provysObjectByNameNm;
 
-    public ProvysNmObjectManagerImpl(R repository, L loader, int initialCapacity) {
-        super(repository, loader, initialCapacity);
-        this.provysObjectByNameNm = new ConcurrentHashMap<>(initialCapacity);
+    public ProvysNmObjectManagerImpl(R repository, L loader, int initialCapacity, int indexCount) {
+        super(repository, loader, initialCapacity, indexCount + 1 ); // +1 for our NameNm index
+        this.provysObjectByNameNm = new IndexUnique<>("NmObjectByNameNm",
+                ProvysNmObjectValue::getNameNm, initialCapacity);
+        addIndex(provysObjectByNameNm);
     }
 
     @Nonnull
@@ -51,31 +52,12 @@ public abstract class ProvysNmObjectManagerImpl<R extends ProvysRepository, O ex
      */
     @Nonnull
     public Optional<O> getByNameNmIfExists(String nameNm) {
-        O provysObject = provysObjectByNameNm.get(Objects.requireNonNull(nameNm));
-        if (provysObject != null) {
-            return Optional.of(provysObject);
+        var provysObject = provysObjectByNameNm.get(Objects.requireNonNull(nameNm)).
+                map(ProvysObjectProxy::selfAsObject);
+        if (provysObject.isEmpty()) {
+            provysObject = getLoader().loadByNameNm(self(), nameNm);
         }
-        return getLoader().loadByNameNm(self(), nameNm);
+        return provysObject;
     }
 
-    @Override
-    protected void doRegisterChange(P provysObject, @Nullable V oldValue, @Nullable V newValue, boolean deleted) {
-        super.doRegisterChange(provysObject, oldValue, newValue, deleted);
-        // change of nameNm
-        if ((oldValue != null) && ((newValue == null) || (!oldValue.getNameNm().equals(newValue.getNameNm())))) {
-            // remove old value
-            var oldObject = provysObjectByNameNm.remove(oldValue.getNameNm());
-            if ((oldObject != null) && (oldObject != provysObject)) {
-                // we do not want any change if old value was not registered in index
-                provysObjectByNameNm.putIfAbsent(oldObject.getNameNm(), oldObject);
-            }
-        }
-        if ((newValue != null) && ((oldValue == null) || (!newValue.getNameNm().equals(oldValue.getNameNm())))) {
-            // register new value
-            var oldObject = provysObjectByNameNm.put(newValue.getNameNm(), provysObject.selfAsObject());
-            if ((oldObject != null) && (oldObject != provysObject)) {
-                LOG.warn("Replaced {} in internal name index {}", getEntityNm(), provysObject.getNameNm());
-            }
-        }
-    }
 }

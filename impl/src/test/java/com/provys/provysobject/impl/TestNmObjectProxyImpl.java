@@ -2,8 +2,9 @@ package com.provys.provysobject.impl;
 
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
+import java.util.Optional;
 
-class TestNmObjectProxyImpl extends ProvysNmObjectProxyImpl<TestNmObject, TestNmObjectValue,
+public class TestNmObjectProxyImpl extends ProvysNmObjectProxyImpl<TestNmObject, TestNmObjectValue,
         TestNmObjectProxyImpl, TestNmObjectManagerImpl> implements TestNmObject {
 
     TestNmObjectProxyImpl(TestNmObjectManagerImpl manager, BigInteger id) {
@@ -23,7 +24,7 @@ class TestNmObjectProxyImpl extends ProvysNmObjectProxyImpl<TestNmObject, TestNm
     }
 
     @Override
-    public String getValue() {
+    public Optional<String> getValue() {
         return validateValueObject().getValue();
     }
 }

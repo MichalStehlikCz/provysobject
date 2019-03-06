@@ -4,16 +4,14 @@ import com.provys.common.exception.InternalException;
 import com.provys.common.exception.RegularException;
 import com.provys.provysobject.ProvysObject;
 import com.provys.provysobject.ProvysRepository;
+import com.provys.provysobject.index.Index;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -52,16 +50,34 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
 
     @Nonnull
     private final Map<BigInteger, P> provysObjectById;
+    @Nonnull
+    private final List<Index<V, P>> indices;
 
     @SuppressWarnings("WeakerAccess") // class is used for subclassing in other packages
-    public ProvysObjectManagerImpl(R repository, L loader, int initialCapacity) {
+    public ProvysObjectManagerImpl(R repository, L loader, int initialCapacity, int indexCount) {
         this.repository = Objects.requireNonNull(repository);
         this.loader = Objects.requireNonNull(loader);
         this.provysObjectById = new ConcurrentHashMap<>(initialCapacity);
+        this.indices = new ArrayList<>(indexCount);
     }
 
     @Nonnull
     protected abstract M self();
+
+    /**
+     * Method used to register index. This index will receive all relevant updates. Method should be called when manager
+     * is still empty (e.g. from constructor)
+     *
+     * @param index is index to be added. Index is directly added to collection, no copying etc.
+     * @throws IllegalStateException if called and manager already contains some objects
+     */
+    @SuppressWarnings("WeakerAccess") // class is used for subclassing in other packages
+    protected void addIndex(Index<V, P> index) {
+        if (!provysObjectById.isEmpty()) {
+            throw new IllegalStateException("Add index method can only be called when manager is empty");
+        }
+        indices.add(index);
+    }
 
     @SuppressWarnings("WeakerAccess") // method can be used by loader or proxy subclasses
     @Nonnull
@@ -127,26 +143,15 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
     }
 
     /**
-     * Does actual updating of indices.
-     * Called from registerChange in case proxy is found to be registered in this manager.
-     *
-     * @param provysObject is proxy to object to be registered
-     * @param oldValue are old values associated with object
-     * @param newValue are new values associated with object
-     * @param deleted indicates if object represented by proxy has been removed from database or proxy is only released
-     *               because it is not current or cache grown too big
-     */
-    @SuppressWarnings("WeakerAccess") // method needs to be overloaded in subclasses
-    protected void doRegisterChange(P provysObject, @Nullable V oldValue, @Nullable V newValue, boolean deleted) {}
-
-    /**
      * Register given object in indices. Verifies that object proxy has been previously registered for its id, if not,
      * throws exception, otherwise defers change registration to doRegisterChange method
      */
     @Override
-    public void registerUpdate(P provysObject, @Nullable V oldValue, @Nullable V newValue, boolean deleted) {
-        if (provysObjectById.get(provysObject.getId()) == provysObject) {
-            doRegisterChange(provysObject, oldValue, newValue, deleted);
+    public void registerUpdate(P objectProxy, @Nullable V oldValue, @Nullable V newValue) {
+        if (provysObjectById.get(objectProxy.getId()) == objectProxy) {
+            for (var index : indices) {
+                index.update(objectProxy, oldValue, newValue);
+            }
         } else {
             throw new InternalException(LOG,
                     "Register change " + getEntityNm() + " called on unregistered object proxy");
@@ -158,16 +163,44 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
      * there might still be objects that retain reference and thus might stumble across invalid object proxy
      */
     @Override
-    public void unregister(P provysObject, @Nullable V oldValue, boolean deleted) {
-        // remove from additional indices
-        if (oldValue != null) {
-            registerChange(provysObject, oldValue, null, deleted);
-        }
+    public void registerDelete(P objectProxy, @Nullable V oldValue) {
         // remove from primary index
-        var oldProvysObject = provysObjectById.remove(provysObject.getId());
-        if ((oldProvysObject != null) && (oldProvysObject != provysObject)) {
-            // if different object has been registered here, return it back
-            provysObjectById.putIfAbsent(oldProvysObject.getId(), oldProvysObject);
+        if (provysObjectById.remove(objectProxy.getId(), objectProxy)) {
+            // if it was registered, remove from all other indices
+            if (oldValue != null) {
+                for (var index : indices) {
+                    index.delete(objectProxy, oldValue);
+                }
+            }
+        } else {
+            // just log warning, no point trying to remove value
+            LOG.warn("Call to delete from {} manager invoked on not registered object {}", getEntityNm(),
+                    objectProxy);
+        }
+    }
+
+    @Override
+    public void unregister(P objectProxy, @Nullable V oldValue) {
+        // remove from primary index
+        if (provysObjectById.remove(objectProxy.getId(), objectProxy)) {
+            // if it was registered, remove from all other indices
+            if (oldValue != null) {
+                for (var index : indices) {
+                    // we register it as update from value  to null, as it invalidates sets object was contained in
+                    index.update(objectProxy, oldValue, null);
+                }
+            }
+        } else {
+            // just log warning, no point trying to remove value
+            LOG.warn("Call to delete from {} manager invoked on not registered object {}", getEntityNm(),
+                    objectProxy);
+        }
+    }
+
+    @Override
+    public void registerUnknownUpdate() {
+        for (var index : indices) {
+            index.unknownUpdate();
         }
     }
 }

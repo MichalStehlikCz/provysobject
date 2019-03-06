@@ -42,7 +42,9 @@ public class TestObjectLoaderImpl extends ProvysObjectLoaderImpl<TestObject, Tes
         @Override
         protected List<TestObjectSource> select() {
             return Stream.of(new TestObjectSource(BigInteger.valueOf(1), "Test value"),
-                    new TestObjectSource(BigInteger.valueOf(5), "Another test value")).
+                    new TestObjectSource(BigInteger.valueOf(5), "Another test value"),
+                    new TestObjectSource(BigInteger.valueOf(6), "Duplicate test value"),
+                    new TestObjectSource(BigInteger.valueOf(6), "Duplicate test value - row 2")).
                     filter(objectSource -> (ids == null) || (ids.contains(objectSource.getId()))).
                     collect(Collectors.toList());
         }

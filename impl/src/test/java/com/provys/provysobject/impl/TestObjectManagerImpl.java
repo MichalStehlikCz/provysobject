@@ -9,7 +9,7 @@ class TestObjectManagerImpl extends ProvysObjectManagerImpl<ProvysRepository, Te
         TestObjectProxyImpl, TestObjectManagerImpl, TestObjectLoader> {
 
     TestObjectManagerImpl(ProvysRepository repository, TestObjectLoader loader) {
-        super(repository, loader, 10);
+        super(repository, loader, 10, 0);
     }
 
     @Nonnull

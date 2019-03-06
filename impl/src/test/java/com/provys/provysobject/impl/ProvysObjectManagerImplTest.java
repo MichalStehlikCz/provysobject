@@ -77,7 +77,9 @@ class ProvysObjectManagerImplTest {
         var manager = new TestObjectManagerImpl(repository, loader);
         var idValue1 = BigInteger.valueOf(1);
         var idValue5 = BigInteger.valueOf(5);
-        assertThat(manager.getAll()).containsExactlyInAnyOrder(manager.getById(idValue1), manager.getById(idValue5));
+        var idValue6 = BigInteger.valueOf(6);
+        assertThat(manager.getAll()).containsExactlyInAnyOrder(manager.getById(idValue1), manager.getById(idValue5),
+                manager.getById(idValue6));
     }
 
     @Test
@@ -112,13 +114,28 @@ class ProvysObjectManagerImplTest {
         var loader = new TestObjectLoaderImpl();
         var manager = new TestObjectManagerImpl(repository, loader);
         var proxy5 = manager.getOrAddById(BigInteger.valueOf(5));
-        assertThatCode(() -> manager.registerChange(proxy5, null, null, false)).
+        assertThatCode(() -> manager.registerUpdate(proxy5, null, null)).
                 doesNotThrowAnyException();
-        assertThatCode(() -> manager.registerChange(proxy5, null, null, true)).
+        assertThatCode(() -> manager.registerUpdate(proxy5, null, null)).
                 doesNotThrowAnyException();
-        manager.unregister(proxy5, null, true);
-        assertThatThrownBy(() -> manager.registerChange(proxy5, null, null, false)).
+        manager.unregister(proxy5, null);
+        assertThatThrownBy(() -> manager.registerUpdate(proxy5, null, null)).
                 isInstanceOf(InternalException.class);
+    }
+
+    @Test
+    void registerDelete() {
+        var repository = mock(ProvysRepository.class);
+        var loader = spy(new TestObjectLoaderImpl());
+        var manager = new TestObjectManagerImpl(repository, loader);
+        var idValue5 = BigInteger.valueOf(5);
+        var proxy5 = manager.getOrAddById(idValue5);
+        manager.getById(idValue5);
+        verify(loader, times(0)).loadById(manager, idValue5);
+        // registerDelete
+        manager.registerDelete(proxy5, null);
+        manager.getById(idValue5);
+        verify(loader, times(1)).loadById(manager, idValue5);
     }
 
     @Test
@@ -130,15 +147,9 @@ class ProvysObjectManagerImplTest {
         var proxy5 = manager.getOrAddById(idValue5);
         manager.getById(idValue5);
         verify(loader, times(0)).loadById(manager, idValue5);
-        // unregister with delete
-        manager.unregister(proxy5, null, true);
+        // unregister
+        manager.unregister(proxy5, null);
         manager.getById(idValue5);
         verify(loader, times(1)).loadById(manager, idValue5);
-        // unregister without delete; we need to retrieve current proxy value first (as we released it and loaded it
-        // again)
-        proxy5 = manager.getOrAddById(idValue5);
-        manager.unregister(proxy5, null, false);
-        manager.getById(idValue5);
-        verify(loader, times(2)).loadById(manager, idValue5);
     }
 }

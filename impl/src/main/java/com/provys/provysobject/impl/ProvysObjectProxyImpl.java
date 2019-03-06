@@ -42,6 +42,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     private final M manager;
     @Nonnull
     private final BigInteger id;
+    private volatile long lastUsed = 0;
     @Nullable
     private V valueObject;
     private boolean deleted = false;
@@ -62,6 +63,16 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     @Nonnull
     protected abstract P self();
 
+    @Override
+    public long getLastUsed() {
+        return lastUsed;
+    }
+
+    @Override
+    public void setLastUsed() {
+        lastUsed = System.currentTimeMillis();
+    }
+
     /**
      * Set value object in this proxy. Method should only be invoked by appropriate loader or updater (but must be
      * published as loader is often implemented in different package)
@@ -77,8 +88,9 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
         if (this.valueObject != valueObject) {
             var oldValue = this.valueObject;
             this.valueObject = valueObject;
-            getManager().registerChange(self(), oldValue, valueObject, false);
+            getManager().registerUpdate(self(), oldValue, valueObject);
         }
+        setLastUsed();
     }
 
     @Override
@@ -86,12 +98,15 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
         if (deleted) {
             throw new InternalException(LOG, "Cannot discard value of deleted " + getManager().getEntityNm() + " proxy");
         }
-
+        if (this.valueObject != null) {
+            getManager().registerUpdate(self(), this.valueObject, null);
+            this.valueObject = null;
+        }
     }
 
     @Override
     public synchronized void deleted() {
-        getManager().unregister(self(), this.valueObject, true);
+        getManager().registerDelete(self(), this.valueObject);
         this.valueObject = null;
         this.deleted = true;
     }
@@ -100,18 +115,12 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
         return deleted;
     }
 
-    private void loadValueObject() {
-        if (deleted) {
-            throw new InternalException(LOG, "Cannot load value of deleted " + getManager().getEntityNm() + " proxy");
-        }
-        getManager().loadValueObject(self());
-    }
-
     @Nonnull
     protected synchronized Optional<V> getValueObject() {
         if (deleted) {
             throw new InternalException(LOG, "Cannot get value of deleted " + getManager().getEntityNm() + " proxy");
         }
+        setLastUsed();
         return Optional.ofNullable(valueObject);
     }
 
@@ -122,11 +131,18 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
                 throw new InternalException(LOG, "Cannot validate value of deleted " + getManager().getEntityNm() +
                         " proxy");
             }
-            loadValueObject();
-            if (valueObject == null) {
-                throw new InternalException(LOG, "Load " + getManager().getEntityNm() + " failed - value is empty");
+            synchronized(this) {
+                if (valueObject == null) {
+                    // we might get it via synchronisation... */
+                    getManager().loadValueObject(self());
+                    if (valueObject == null) {
+                        throw new InternalException(LOG, "Load " + getManager().getEntityNm() +
+                                " failed - value is empty");
+                    }
+                }
             }
         }
+        setLastUsed();
         return valueObject;
     }
 

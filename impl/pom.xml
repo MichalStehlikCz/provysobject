@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ProvysObject</artifactId>
         <groupId>com.provys.provysobject</groupId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>provysobject-impl</artifactId>
@@ -14,11 +14,6 @@
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.provys.provysobject</groupId>
-            <artifactId>provysobject-api</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.provys</groupId>
@@ -52,6 +47,11 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.provys.provysobject</groupId>
+            <artifactId>provysobject-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

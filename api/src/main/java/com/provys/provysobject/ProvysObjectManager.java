@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.provys.common.exception.RegularException;
 
+@SuppressWarnings("WeakerAccess") // used as basis for subclassing in other modules
 public interface ProvysObjectManager<T extends ProvysObject> {
     /**
      * Retrieve internal name of PROVYS entity, managed by this manager
