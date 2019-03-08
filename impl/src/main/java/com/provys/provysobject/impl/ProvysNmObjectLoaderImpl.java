@@ -23,6 +23,7 @@ public abstract class ProvysNmObjectLoaderImpl<O extends ProvysNmObject, V exten
     @Nonnull
     @Override
     public Optional<O> loadByNameNm(M manager, String nameNm) {
+        LOG.info("Load {} by nameNm {}", manager::getEntityNm, nameNm::toString);
         var result = getLoadRunnerByNameNm(manager, nameNm).run();
         if (result.isEmpty()) {
             return Optional.empty();

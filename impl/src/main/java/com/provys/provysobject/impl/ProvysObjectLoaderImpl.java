@@ -23,6 +23,7 @@ public abstract class ProvysObjectLoaderImpl<O extends ProvysObject, V extends P
     @Nonnull
     @Override
     public Optional<P> loadById(M manager, BigInteger id) {
+        LOG.info("Load {} by Id {}", manager::getEntityNm, () -> id);
         var result = getLoadRunnerById(manager, id).run();
         if (result.isEmpty()) {
             return Optional.empty();
@@ -36,6 +37,7 @@ public abstract class ProvysObjectLoaderImpl<O extends ProvysObject, V extends P
 
     @Override
     public void loadValue(M manager, P objectProxy) {
+        LOG.info("Load {} value for Id {}", manager::getEntityNm, objectProxy::getId);
         getLoadRunnerById(manager, objectProxy.getId()).setValueObject(objectProxy);
     }
 
@@ -44,6 +46,7 @@ public abstract class ProvysObjectLoaderImpl<O extends ProvysObject, V extends P
 
     @Override
     public void loadAll(M manager) {
+        LOG.info("Load all {}", manager::getEntityNm);
         var loadRunner = getLoadRunnerAll(manager);
         loadRunner.run();
     }
