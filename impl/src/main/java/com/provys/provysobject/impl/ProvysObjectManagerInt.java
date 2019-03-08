@@ -7,7 +7,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
 
-interface ProvysObjectManagerInt<O extends ProvysObject, V extends ProvysObjectValue,
+@SuppressWarnings("WeakerAccess") // inaccessibility might cause problems in loader subclasses
+public interface ProvysObjectManagerInt<O extends ProvysObject, V extends ProvysObjectValue,
         P extends ProvysObjectProxy<O, V>>
         extends ProvysObjectManager<O> {
 
