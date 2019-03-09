@@ -4,7 +4,7 @@
     <groupId>com.provys.provysobject</groupId>
     <artifactId>ProvysObject</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.5</version>
     <modules>
         <module>api</module>
         <module>impl</module>
@@ -14,7 +14,8 @@
     </properties>
     <scm>
         <developerConnection>scm:git:https://github.com/MichalStehlikCz/provysobject.git</developerConnection>
-    </scm>
+      <tag>v1.0.5</tag>
+  </scm>
     <dependencyManagement>
         <dependencies>
             <dependency>
