@@ -8,12 +8,17 @@
         <outputRelativeToContentRoot value="true" />
         <module name="api" />
         <module name="impl" />
+        <module name="provysobject-api" />
+        <module name="provysobject-impl" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api" target="11" />
       <module name="impl" target="11" />
       <module name="ProvysObject" target="1.5" />
+      <module name="provysobject" target="1.5" />
+      <module name="provysobject-api" target="11" />
+      <module name="provysobject-impl" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

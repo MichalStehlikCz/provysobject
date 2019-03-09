@@ -3,6 +3,9 @@
   <component name="EntryPointsManager">
     <pattern value="com.provys.provysobject.ProvysNmObjectManager" method="getByNameNm" />
   </component>
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
