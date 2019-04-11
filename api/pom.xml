@@ -19,8 +19,8 @@
             <artifactId>jsr305</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.provys</groupId>
-            <artifactId>common</artifactId>
+            <groupId>com.provys.common</groupId>
+            <artifactId>common-exception</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
