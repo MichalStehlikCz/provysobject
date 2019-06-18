@@ -36,7 +36,7 @@
             <dependency>
                 <groupId>org.jooq.pro</groupId>
                 <artifactId>jooq</artifactId>
-                <version>3.11.9</version>
+                <version>3.11.11</version>
             </dependency>
             <dependency>
                 <groupId>com.oracle</groupId>
@@ -68,7 +68,7 @@
             <dependency>
                 <groupId>org.jboss.weld.se</groupId>
                 <artifactId>weld-se-shaded</artifactId>
-                <version>3.1.0.Final</version>
+                <version>3.1.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss</groupId>
@@ -83,12 +83,12 @@
             <dependency>
                 <groupId>io.smallrye</groupId>
                 <artifactId>smallrye-config</artifactId>
-                <version>1.3.5</version>
+                <version>1.3.7</version>
             </dependency>
             <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli</artifactId>
-                <version>4.0.0-alpha-1</version>
+                <version>4.0.0-beta-1b</version>
             </dependency>
             <dependency>
                 <groupId>org.sparx</groupId>
@@ -98,19 +98,19 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
-                <version>5.5.0-M1</version>
+                <version>5.5.0-RC1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
-                <version>5.5.0-M1</version>
+                <version>5.5.0-RC1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.5.0-M1</version>
+                <version>5.5.0-RC1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -122,13 +122,13 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.27.0</version>
+                <version>2.28.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>2.27.0</version>
+                <version>2.28.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -139,12 +139,12 @@
             <dependency>
                 <groupId>com.provys.common</groupId>
                 <artifactId>common-exception</artifactId>
-                <version>1.0.3</version>
+                <version>1.0.4</version>
             </dependency>
             <dependency>
                 <groupId>com.provys</groupId>
                 <artifactId>provysdb</artifactId>
-                <version>1.0.1</version>
+                <version>1.1.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
