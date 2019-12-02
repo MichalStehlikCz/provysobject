@@ -11,14 +11,14 @@ import java.util.Optional;
 
 @SuppressWarnings("WeakerAccess") // get load runner methods must be overridden in implementation classes
 public abstract class ProvysObjectLoaderImpl<O extends ProvysObject, V extends ProvysObjectValue,
-        P extends ProvysObjectProxy<O, V>, M extends ProvysObjectManagerInt<O, V, P>, S>
+        P extends ProvysObjectProxy<O, V>, M extends ProvysObjectManagerInt<O, V, P>>
         implements ProvysObjectLoader<O, V, P, M> {
 
     @Nonnull
     private static final Logger LOG = LogManager.getLogger(ProvysObjectLoaderImpl.class);
 
     @Nonnull
-    protected abstract ProvysObjectLoadRunner<O, V, P, M, S> getLoadRunnerById(M manager, BigInteger id);
+    protected abstract ProvysObjectLoadRunner<O, V, P, M> getLoadRunnerById(M manager, BigInteger id);
 
     @Nonnull
     @Override
@@ -42,7 +42,7 @@ public abstract class ProvysObjectLoaderImpl<O extends ProvysObject, V extends P
     }
 
     @Nonnull
-    protected abstract ProvysObjectLoadRunner<O, V, P, M, S> getLoadRunnerAll(M manager);
+    protected abstract ProvysObjectLoadRunner<O, V, P, M> getLoadRunnerAll(M manager);
 
     @Override
     public void loadAll(M manager) {
@@ -50,5 +50,4 @@ public abstract class ProvysObjectLoaderImpl<O extends ProvysObject, V extends P
         var loadRunner = getLoadRunnerAll(manager);
         loadRunner.run();
     }
-
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TestNmObjectLoaderImpl extends ProvysNmObjectLoaderImpl<TestNmObject, TestNmObjectValue,
-        TestNmObjectProxyImpl, TestNmObjectManagerImpl, TestNmObjectSource> implements TestNmObjectLoader {
+        TestNmObjectProxyImpl, TestNmObjectManagerImpl> implements TestNmObjectLoader {
     @Nonnull
     @Override
     protected LoadRunner getLoadRunnerByNameNm(TestNmObjectManagerImpl manager, String nameNm) {
@@ -31,7 +31,7 @@ public class TestNmObjectLoaderImpl extends ProvysNmObjectLoaderImpl<TestNmObjec
     }
 
     private static class LoadRunner extends ProvysObjectLoadRunner<TestNmObject, TestNmObjectValue,
-            TestNmObjectProxyImpl, TestNmObjectManagerImpl, TestNmObjectSource> {
+            TestNmObjectProxyImpl, TestNmObjectManagerImpl> {
 
         @Nullable
         private final Set<BigInteger> ids;
@@ -55,24 +55,13 @@ public class TestNmObjectLoaderImpl extends ProvysNmObjectLoaderImpl<TestNmObjec
 
         @Nonnull
         @Override
-        protected List<TestNmObjectSource> select() {
+        protected List<TestNmObjectValue> select() {
             return Stream.of(new TestNmObjectSource(BigInteger.valueOf(1), "NM1", "Test value"),
-                    new TestNmObjectSource(BigInteger.valueOf(5), "NM5", "Another test value")).
-                    filter(objectSource -> (ids == null) || (ids.contains(objectSource.getId()))).
-                    filter(objectSource -> (nameNms == null) || (nameNms.contains(objectSource.getNameNm()))).
-                    collect(Collectors.toList());
-        }
-
-        @Nonnull
-        @Override
-        protected BigInteger getId(TestNmObjectSource sourceObject) {
-            return sourceObject.getId();
-        }
-
-        @Nonnull
-        @Override
-        protected TestNmObjectValue createValueObject(TestNmObjectSource sourceObject) {
-            return new TestNmObjectValue(sourceObject.getId(), sourceObject.getNameNm(), sourceObject.getValue());
+                    new TestNmObjectSource(BigInteger.valueOf(5), "NM5", "Another test value"))
+                    .filter(objectSource -> (ids == null) || (ids.contains(objectSource.getId())))
+                    .filter(objectSource -> (nameNms == null) || (nameNms.contains(objectSource.getNameNm())))
+                    .map(sourceObject -> new TestNmObjectValue(sourceObject.getId(), sourceObject.getNameNm(), sourceObject.getValue()))
+                    .collect(Collectors.toList());
         }
     }
 }

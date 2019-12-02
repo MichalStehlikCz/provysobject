@@ -8,9 +8,17 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
+/**
+ * Ancestor for loader of objects identified by internal name
+ *
+ * @param <O> is object type (interface) this loader works for
+ * @param <V> is value type corresponding to object type O
+ * @param <P> is proxy type corresponding to object type O
+ * @param <M> is manager caching objects of type O
+ */
 public abstract class ProvysNmObjectLoaderImpl<O extends ProvysNmObject, V extends ProvysNmObjectValue,
-        P extends ProvysNmObjectProxy<O, V>, M extends ProvysNmObjectManagerInt<O, V, P>, S>
-        extends ProvysObjectLoaderImpl<O, V, P, M, S>
+        P extends ProvysNmObjectProxy<O, V>, M extends ProvysNmObjectManagerInt<O, V, P>>
+        extends ProvysObjectLoaderImpl<O, V, P, M>
         implements ProvysNmObjectLoader<O, V, P, M> {
 
     @Nonnull
@@ -18,7 +26,7 @@ public abstract class ProvysNmObjectLoaderImpl<O extends ProvysNmObject, V exten
 
     @SuppressWarnings("WeakerAccess") // method needs to be implemented in subclasses
     @Nonnull
-    protected abstract ProvysObjectLoadRunner<O, V, P, M, S> getLoadRunnerByNameNm(M manager, String nameNm);
+    protected abstract ProvysObjectLoadRunner<O, V, P, M> getLoadRunnerByNameNm(M manager, String nameNm);
 
     @Nonnull
     @Override
