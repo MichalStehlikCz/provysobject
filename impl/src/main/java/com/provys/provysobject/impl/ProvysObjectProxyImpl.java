@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.json.bind.annotation.JsonbTransient;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,6 +64,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     @Nonnull
     protected abstract P self();
 
+    @JsonbTransient
     @Override
     public long getLastUsed() {
         return lastUsed;
@@ -111,6 +113,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
         this.deleted = true;
     }
 
+    @JsonbTransient
     public synchronized boolean isDeleted() {
         return deleted;
     }
