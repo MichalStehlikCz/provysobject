@@ -2,6 +2,8 @@ package com.provys.provysobject.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.json.bind.annotation.JsonbProperty;
+import javax.xml.bind.annotation.XmlElement;
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -16,6 +18,8 @@ public abstract class ProvysNmObjectValue extends ProvysObjectValue {
         this.nameNm = Objects.requireNonNull(nameNm);
     }
 
+    @JsonbProperty("NAME_NM")
+    @XmlElement(name = "NAME_NM")
     @Nonnull
     public String getNameNm() {
         return nameNm;
@@ -30,5 +34,4 @@ public abstract class ProvysNmObjectValue extends ProvysObjectValue {
         ProvysNmObjectValue that = (ProvysNmObjectValue) o;
         return Objects.equals(getNameNm(), that.getNameNm());
     }
-
 }

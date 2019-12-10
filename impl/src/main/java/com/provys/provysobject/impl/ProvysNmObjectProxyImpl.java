@@ -3,8 +3,6 @@ package com.provys.provysobject.impl;
 import com.provys.provysobject.ProvysNmObject;
 
 import javax.annotation.Nonnull;
-import javax.json.bind.annotation.JsonbProperty;
-import javax.xml.bind.annotation.XmlElement;
 import java.math.BigInteger;
 
 @SuppressWarnings("WeakerAccess") // used as basis for subclassing in other modules
@@ -17,8 +15,6 @@ public abstract class ProvysNmObjectProxyImpl<O extends ProvysNmObject, V extend
         super(manager, id);
     }
 
-    @JsonbProperty("NAME_NM")
-    @XmlElement(name = "NAME_NM")
     @Nonnull
     @Override
     public String getNameNm() {
