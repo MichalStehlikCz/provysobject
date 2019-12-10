@@ -125,8 +125,9 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     }
 
     @Nonnull
-    protected V validateValueObject() {
-        if (valueObject == null) {
+    public V validateValueObject() {
+        var result = valueObject; // if somebody discards valueObject, we want to retrieve older value rather than null
+        if (result == null) {
             if (deleted) {
                 throw new InternalException(LOG, "Cannot validate value of deleted " + getManager().getEntityNm() +
                         " proxy");
@@ -140,10 +141,11 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
                                 " failed - value is empty");
                     }
                 }
+                result = valueObject;
             }
         }
         setLastUsed();
-        return valueObject;
+        return result;
     }
 
     @Nonnull
