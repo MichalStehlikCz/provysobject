@@ -18,8 +18,6 @@ public abstract class ProvysNmObjectValue extends ProvysObjectValue {
         this.nameNm = Objects.requireNonNull(nameNm);
     }
 
-    @JsonbProperty("NAME_NM")
-    @XmlElement(name = "NAME_NM")
     @Nonnull
     public String getNameNm() {
         return nameNm;
