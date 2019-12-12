@@ -2,6 +2,8 @@ package com.provys.provysobject.impl;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -13,6 +15,7 @@ import java.util.Objects;
  * @param <V> is value type this builder is used for
  */
 @SuppressWarnings("WeakerAccess") // library class, used as ancestor for objects in other packages
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class ProvysObjectValueBuilder<B extends ProvysObjectValueBuilder<B, V>, V extends ProvysObjectValue> {
 
     @Nullable

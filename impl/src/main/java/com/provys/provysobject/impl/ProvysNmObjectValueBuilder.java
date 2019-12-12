@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Objects;
 
@@ -15,6 +17,7 @@ import java.util.Objects;
  * Common ancestor for builders for provys objects with internal name used as unique identifier
  */
 @SuppressWarnings({"WeakerAccess", "UnusedReturnValue"}) // class used as basis for subclassing in other packages
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBuilder<B, V>,
         V extends ProvysNmObjectValue> extends ProvysObjectValueBuilder<B, V> {
 
