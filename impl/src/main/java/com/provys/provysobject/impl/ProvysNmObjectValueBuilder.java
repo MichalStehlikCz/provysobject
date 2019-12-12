@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Objects;
@@ -73,6 +74,7 @@ public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBu
     /**
      * @return if internal name is set and will be updated
      */
+    @JsonbTransient
     public boolean getUpdNameNm() {
         return (nameNm != null);
     }
