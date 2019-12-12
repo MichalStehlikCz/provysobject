@@ -55,7 +55,6 @@ public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBu
     /**
      * @return value of field nameNm
      */
-    @XmlElement(name = "NAME_NM")
     @Nullable
     public String getNameNm() {
         return nameNm;
