@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +34,7 @@ import java.util.Optional;
  *          manager ans should never be instantiated otherwise
  */
 @SuppressWarnings("WeakerAccess")
-@XmlAccessorType(XmlAccessType.NONE)
+@XmlTransient
 public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends ProvysObjectValue,
         P extends ProvysObjectProxy<O, V>, M extends ProvysObjectManagerInt<O, V, P>>
         implements ProvysObjectProxy<O, V> {

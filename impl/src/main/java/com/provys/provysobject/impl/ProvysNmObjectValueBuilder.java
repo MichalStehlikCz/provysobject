@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -56,7 +55,6 @@ public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBu
     /**
      * @return value of field nameNm
      */
-    @JsonbProperty("NAME_NM")
     @XmlElement(name = "NAME_NM")
     @Nullable
     public String getNameNm() {
