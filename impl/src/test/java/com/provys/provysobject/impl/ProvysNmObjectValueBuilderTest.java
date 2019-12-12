@@ -1,15 +1,50 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.exception.InternalException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigInteger;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 
 class ProvysNmObjectValueBuilderTest {
+
+    @Test
+    void fromValueTest() {
+        var builder = new TestNmObjectValueBuilder(
+                new TestNmObjectValue(BigInteger.valueOf(10), "NM", "value"));
+        assertThat(builder.getNameNm()).isEqualTo("NM");
+        assertThat(builder.getUpdNameNm()).isTrue();
+    }
+
+    @Test
+    void fromBuilderTest() {
+        var builder = new TestNmObjectValueBuilder(new TestNmObjectValueBuilder());
+        assertThat(builder.getNameNm()).isNull();
+        assertThat(builder.getUpdNameNm()).isFalse();
+        builder = new TestNmObjectValueBuilder(builder.setNameNm("NM"));
+        assertThat(builder.getNameNm()).isEqualTo("NM");
+        assertThat(builder.getUpdNameNm()).isTrue();
+    }
+
+    @Test
+    void setTest() {
+        var builder = new TestNmObjectValueBuilder();
+        assertThat(builder.getNameNm()).isNull();
+        assertThat(builder.getUpdNameNm()).isFalse();
+        builder.setNameNm("NM");
+        assertThat(builder.getNameNm()).isEqualTo("NM");
+        assertThat(builder.getUpdNameNm()).isTrue();
+        builder.setUpdNameNm(true);
+        assertThat(builder.getNameNm()).isEqualTo("NM");
+        builder.setNameNm("TestNm");
+        assertThat(builder.getNameNm()).isEqualTo("TestNm");
+        assertThat(builder.getUpdNameNm()).isTrue();
+        builder.setUpdNameNm(false);
+        assertThat(builder.getNameNm()).isNull();
+        assertThat(builder.getUpdNameNm()).isFalse();
+        assertThatThrownBy(() -> builder.setUpdNameNm(true)).isInstanceOf(InternalException.class);
+    }
 
     @Test
     void applyTest() {

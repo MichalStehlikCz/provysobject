@@ -1,5 +1,9 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.exception.InternalException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.annotation.Nullable;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.constraints.NotNull;
@@ -9,9 +13,11 @@ import java.util.Objects;
 /**
  * Common ancestor for builders for provys objects with internal name used as unique identifier
  */
-@SuppressWarnings("WeakerAccess") // class used as basis for subclassing in other packages
+@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"}) // class used as basis for subclassing in other packages
 public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBuilder<B, V>,
         V extends ProvysNmObjectValue> extends ProvysObjectValueBuilder<B, V> {
+
+    private static final Logger LOG = LogManager.getLogger(ProvysNmObjectValueBuilder.class);
 
     @Nullable
     @NotNull
@@ -30,6 +36,7 @@ public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBu
      */
     public ProvysNmObjectValueBuilder(V value) {
         super(value);
+        setNameNm(value.getNameNm());
     }
 
     /**
@@ -58,8 +65,33 @@ public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBu
      * @param nameNm is new value to be set
      * @return self to enable chaining
      */
-    public ProvysNmObjectValueBuilder<B, V> setNameNm(String nameNm) {
+    public B setNameNm(String nameNm) {
         this.nameNm = Objects.requireNonNull(nameNm, "NameNm cannot be null");
+        return self();
+    }
+
+    /**
+     * @return if internal name is set and will be updated
+     */
+    public boolean getUpdNameNm() {
+        return (nameNm != null);
+    }
+
+    /**
+     * Set if internal name should be updated. Note that it is not possible to set it to true - you should set value of
+     * internal name instead
+     *
+     * @param updNameNm can be set to false (reset internal name); when set to true, it either does nothing (if original
+     *                 value of updNameNm was true) or throws an exception
+     * @return self to allow fluent build
+     */
+    public B setUpdNameNm(boolean updNameNm) {
+        if ((nameNm == null) && updNameNm) {
+            throw new InternalException(LOG, "Cannot set updNameNm to true; use setNameNm instead");
+        }
+        if (!updNameNm) {
+            nameNm = null;
+        }
         return self();
     }
 
@@ -79,6 +111,7 @@ public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBu
         return super.notChanged(source);
     }
 
+    @SuppressWarnings("squid:S1206") // id identifies object sufficiently
     @Override
     public boolean equals(@Nullable Object o) {
         if (this == o) return true;
@@ -86,11 +119,6 @@ public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBu
         if (!super.equals(o)) return false;
         ProvysNmObjectValueBuilder<?, ?> that = (ProvysNmObjectValueBuilder<?, ?>) o;
         return Objects.equals(nameNm, that.nameNm);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), nameNm);
     }
 
     @Override
