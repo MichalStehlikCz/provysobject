@@ -2,6 +2,7 @@ package com.provys.provysobject.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -10,6 +11,7 @@ import java.util.Objects;
  * Created by corresponding loader and used internally by given proxy.
  */
 @SuppressWarnings("WeakerAccess") // basis for subclassing in other packages
+@XmlTransient
 public abstract class ProvysObjectValue {
 
     @Nonnull
