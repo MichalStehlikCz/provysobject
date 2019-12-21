@@ -34,7 +34,6 @@ import java.util.Optional;
  *          manager ans should never be instantiated otherwise
  */
 @SuppressWarnings("WeakerAccess")
-@XmlTransient
 public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends ProvysObjectValue,
         P extends ProvysObjectProxy<O, V>, M extends ProvysObjectManagerInt<O, V, P>>
         implements ProvysObjectProxy<O, V> {

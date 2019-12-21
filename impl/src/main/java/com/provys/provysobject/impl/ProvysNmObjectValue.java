@@ -2,7 +2,6 @@ package com.provys.provysobject.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.json.bind.annotation.JsonbProperty;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
