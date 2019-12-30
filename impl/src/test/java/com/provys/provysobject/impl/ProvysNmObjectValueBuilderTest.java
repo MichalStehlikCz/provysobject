@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.common.exception.InternalException;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ class ProvysNmObjectValueBuilderTest {
     @Test
     void fromValueTest() {
         var builder = new TestNmObjectValueBuilder(
-                new TestNmObjectValue(BigInteger.valueOf(10), "NM", "value"));
+                new TestNmObjectValue(DtUid.of(10), "NM", "value"));
         assertThat(builder.getNameNm()).isEqualTo("NM");
         assertThat(builder.getUpdNameNm()).isTrue();
     }
@@ -49,22 +50,22 @@ class ProvysNmObjectValueBuilderTest {
     @Test
     void applyTest() {
         var builder = new TestNmObjectValueBuilder();
-        builder.apply(new TestNmObjectValue(BigInteger.valueOf(10), "NM", "Test"));
+        builder.apply(new TestNmObjectValue(DtUid.of(10), "NM", "Test"));
         assertThat(builder.getNameNm()).isEqualTo("NM");
-        builder.apply(new TestNmObjectValue(BigInteger.valueOf(10), "TEST_NM", "Test"));
+        builder.apply(new TestNmObjectValue(DtUid.of(10), "TEST_NM", "Test"));
         assertThat(builder.getNameNm()).isEqualTo("NM");
     }
 
     @Test
     void notChangedTest() {
         var builder = new TestNmObjectValueBuilder();
-        var value = new TestNmObjectValue(BigInteger.valueOf(10), "NM", "Test");
+        var value = new TestNmObjectValue(DtUid.of(10), "NM", "Test");
         assertThat(builder.notChanged(value)).isTrue();
-        builder.setId(BigInteger.valueOf(10));
+        builder.setId(DtUid.of(10));
         assertThat(builder.notChanged(value)).isTrue();
-        builder.setId(BigInteger.valueOf(20));
+        builder.setId(DtUid.of(20));
         assertThat(builder.notChanged(value)).isFalse();
-        builder.setId(BigInteger.valueOf(10))
+        builder.setId(DtUid.of(10))
                 .setNameNm("TEST");
         assertThat(builder.notChanged(value)).isFalse();
         builder.setNameNm("NM");
@@ -73,7 +74,7 @@ class ProvysNmObjectValueBuilderTest {
 
     @Test
     void testToStringTest() {
-        assertThat(new TestNmObjectValueBuilder().setId(BigInteger.valueOf(10)).setNameNm("Name Nm").toString())
-                .isEqualTo("ProvysNmObjectValueBuilder{nameNm='Name Nm'} ProvysObjectValueBuilder{id=10}");
+        assertThat(new TestNmObjectValueBuilder().setId(DtUid.of(10)).setNameNm("Name Nm").toString())
+                .isEqualTo("ProvysNmObjectValueBuilder{nameNm='Name Nm'} ProvysObjectValueBuilder{id=ID10}");
     }
 }

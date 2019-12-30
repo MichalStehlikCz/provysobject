@@ -1,5 +1,7 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
@@ -12,7 +14,7 @@ public class TestObjectLoaderImpl extends ProvysObjectLoaderImpl<TestObject, Tes
 
     @Nonnull
     @Override
-    protected LoadRunner getLoadRunnerById(TestObjectManagerImpl manager, BigInteger id) {
+    protected LoadRunner getLoadRunnerById(TestObjectManagerImpl manager, DtUid id) {
         return new LoadRunner(manager, List.of(id));
     }
 
@@ -26,9 +28,9 @@ public class TestObjectLoaderImpl extends ProvysObjectLoaderImpl<TestObject, Tes
             TestObjectManagerImpl> {
 
         @Nullable
-        private final Set<BigInteger> ids;
+        private final Set<DtUid> ids;
 
-        LoadRunner(TestObjectManagerImpl manager, Collection<BigInteger> ids) {
+        LoadRunner(TestObjectManagerImpl manager, Collection<DtUid> ids) {
             super(manager);
             this.ids = new HashSet<>(ids);
         }
@@ -41,10 +43,10 @@ public class TestObjectLoaderImpl extends ProvysObjectLoaderImpl<TestObject, Tes
         @Nonnull
         @Override
         protected List<TestObjectValue> select() {
-            return Stream.of(new TestObjectSource(BigInteger.valueOf(1), "Test value"),
-                    new TestObjectSource(BigInteger.valueOf(5), "Another test value"),
-                    new TestObjectSource(BigInteger.valueOf(6), "Duplicate test value"),
-                    new TestObjectSource(BigInteger.valueOf(6), "Duplicate test value - row 2"))
+            return Stream.of(new TestObjectSource(DtUid.of(1), "Test value"),
+                    new TestObjectSource(DtUid.of(5), "Another test value"),
+                    new TestObjectSource(DtUid.of(6), "Duplicate test value"),
+                    new TestObjectSource(DtUid.of(6), "Duplicate test value - row 2"))
                     .filter(objectSource -> (ids == null) || (ids.contains(objectSource.getId())))
                     .map(sourceObject -> new TestObjectValue(sourceObject.getId(), sourceObject.getValue()))
                     .collect(Collectors.toList());

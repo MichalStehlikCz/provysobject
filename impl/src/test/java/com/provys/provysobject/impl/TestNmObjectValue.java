@@ -1,5 +1,7 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
@@ -11,7 +13,7 @@ public class TestNmObjectValue extends ProvysNmObjectValue {
     @Nullable
     private final String value;
 
-    public TestNmObjectValue(BigInteger id, String nameNm, @Nullable String value) {
+    public TestNmObjectValue(DtUid id, String nameNm, @Nullable String value) {
         super(id, nameNm);
         this.value = value;
     }

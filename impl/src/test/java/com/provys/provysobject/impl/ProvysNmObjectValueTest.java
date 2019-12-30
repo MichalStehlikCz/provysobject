@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,27 +15,27 @@ import static org.assertj.core.api.Assertions.*;
 class ProvysNmObjectValueTest {
 
     private static class TestNmProvysObjectValue extends ProvysNmObjectValue {
-        TestNmProvysObjectValue(BigInteger id, String nameNm) {
+        TestNmProvysObjectValue(DtUid id, String nameNm) {
             super(id, nameNm);
         }
     }
 
     @Test
     void getNameNmTest() {
-        assertThat(new TestNmProvysObjectValue(BigInteger.valueOf(3), "NM").getNameNm()).isEqualTo("NM");
+        assertThat(new TestNmProvysObjectValue(DtUid.of(3), "NM").getNameNm()).isEqualTo("NM");
     }
 
     @Nonnull
     static Stream<Object[]> equalsTest() {
         return Stream.of(
-                new Object[]{new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM"),
-                        new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM"), true}
-                , new Object[]{new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM1"),
-                        new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM2"), false}
-                , new Object[]{new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM"), null, false}
-                , new Object[]{new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM"),
-                        new TestNmProvysObjectValue(BigInteger.valueOf(6), "NM"), false}
-                , new Object[]{new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM"), "xxx", false}
+                new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"),
+                        new TestNmProvysObjectValue(DtUid.of(5), "NM"), true}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM1"),
+                        new TestNmProvysObjectValue(DtUid.of(5), "NM2"), false}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"), null, false}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"),
+                        new TestNmProvysObjectValue(DtUid.of(6), "NM"), false}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"), "xxx", false}
         );
     }
 
@@ -47,10 +48,10 @@ class ProvysNmObjectValueTest {
     @Nonnull
     static Stream<Object[]> hashCodeTest() {
         return Stream.of(
-                new Object[]{new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM"),
-                        new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM"), true}
-                , new Object[]{new TestNmProvysObjectValue(BigInteger.valueOf(5), "NM"),
-                        new TestNmProvysObjectValue(BigInteger.valueOf(6), "NM"), false}
+                new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"),
+                        new TestNmProvysObjectValue(DtUid.of(5), "NM"), true}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"),
+                        new TestNmProvysObjectValue(DtUid.of(6), "NM"), false}
         );
     }
 

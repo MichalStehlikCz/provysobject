@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.common.exception.InternalException;
 import com.provys.provysobject.ProvysObject;
 import org.apache.logging.log4j.LogManager;
@@ -18,11 +19,11 @@ public abstract class ProvysObjectLoaderImpl<O extends ProvysObject, V extends P
     private static final Logger LOG = LogManager.getLogger(ProvysObjectLoaderImpl.class);
 
     @Nonnull
-    protected abstract ProvysObjectLoadRunner<O, V, P, M> getLoadRunnerById(M manager, BigInteger id);
+    protected abstract ProvysObjectLoadRunner<O, V, P, M> getLoadRunnerById(M manager, DtUid id);
 
     @Nonnull
     @Override
-    public Optional<P> loadById(M manager, BigInteger id) {
+    public Optional<P> loadById(M manager, DtUid id) {
         LOG.info("Load {} by Id {}", manager::getEntityNm, () -> id);
         var result = getLoadRunnerById(manager, id).run();
         if (result.isEmpty()) {

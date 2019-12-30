@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,62 +14,62 @@ class ProvysObjectValueBuilderTest {
 
     @Test
     void newFromValueTest() {
-        var value = new TestObjectValue(BigInteger.valueOf(10), "Test");
+        var value = new TestObjectValue(DtUid.of(10), "Test");
         assertThat(new TestObjectValueBuilder(value)).isEqualTo(
-                new TestObjectValueBuilder().setId(BigInteger.valueOf(10)).setValue("Test"));
+                new TestObjectValueBuilder().setId(DtUid.of(10)).setValue("Test"));
     }
 
     @Test
     void newFromBuilderTest() {
-        var builder = new TestObjectValueBuilder().setId(BigInteger.valueOf(10)).setValue("Test");
+        var builder = new TestObjectValueBuilder().setId(DtUid.of(10)).setValue("Test");
         assertThat(new TestObjectValueBuilder(builder)).isEqualTo(builder);
     }
 
     @Test
     void setIdTest() {
-        var builder = new TestObjectValueBuilder().setId(BigInteger.valueOf(10));
-        assertThat(builder.getId()).isEqualTo(10);
-        builder.setId(BigInteger.valueOf(20));
-        assertThat(builder.getId()).isEqualTo(20);
-        //noinspection ConstantConditions
-        assertThatThrownBy(() -> builder.setId(null)).hasMessage("Id cannot be set to null");
+        var builder = new TestObjectValueBuilder().setId(DtUid.of(10));
+        assertThat(builder.getId()).isEqualTo(DtUid.of(10));
+        builder.setId(DtUid.of(20));
+        assertThat(builder.getId()).isEqualTo(DtUid.of(20));
+        builder.setId(null);
+        assertThat(builder.getId()).isNull();
     }
 
     @Test
     void applyTest() {
         var builder = new TestObjectValueBuilder();
-        builder.apply(new TestObjectValue(BigInteger.valueOf(10), "Test"));
-        assertThat(builder.getId()).isEqualTo(10);
-        builder.apply(new TestObjectValue(BigInteger.valueOf(20), "Test"));
-        assertThat(builder.getId()).isEqualTo(10);
+        builder.apply(new TestObjectValue(DtUid.of(10), "Test"));
+        assertThat(builder.getId()).isEqualTo(DtUid.of(10));
+        builder.apply(new TestObjectValue(DtUid.of(20), "Test"));
+        assertThat(builder.getId()).isEqualTo(DtUid.of(10));
     }
 
     @Test
     void notChangedTest() {
         var builder = new TestObjectValueBuilder();
-        var value = new TestObjectValue(BigInteger.valueOf(10), "Test");
+        var value = new TestObjectValue(DtUid.of(10), "Test");
         assertThat(builder.notChanged(value)).isTrue();
-        builder.setId(BigInteger.valueOf(10));
+        builder.setId(DtUid.of(10));
         assertThat(builder.notChanged(value)).isTrue();
-        builder.setId(BigInteger.valueOf(20));
+        builder.setId(DtUid.of(20));
         assertThat(builder.notChanged(value)).isFalse();
     }
 
     @Test
     void buildFromTest() {
         var builder = new TestObjectValueBuilder();
-        var value = new TestObjectValue(BigInteger.valueOf(10), "Test");
+        var value = new TestObjectValue(DtUid.of(10), "Test");
         assertThat(builder.buildFrom(value)).isSameAs(value);
         assertThat(builder.getId()).isNull();
-        builder.setId(BigInteger.valueOf(10));
+        builder.setId(DtUid.of(10));
         assertThat(builder.buildFrom(value)).isSameAs(value);
-        builder.setId(BigInteger.valueOf(20));
-        assertThat(builder.buildFrom(value).getId()).isEqualTo(20);
+        builder.setId(DtUid.of(20));
+        assertThat(builder.buildFrom(value).getId()).isEqualTo(DtUid.of(20));
     }
 
     @Test
     void testToStringTest() {
-        assertThat(new TestObjectValueBuilder().setId(BigInteger.valueOf(10)).toString())
-                .isEqualTo("ProvysObjectValueBuilder{id=10}");
+        assertThat(new TestObjectValueBuilder().setId(DtUid.of(10)).toString())
+                .isEqualTo("ProvysObjectValueBuilder{id=ID10}");
     }
 }

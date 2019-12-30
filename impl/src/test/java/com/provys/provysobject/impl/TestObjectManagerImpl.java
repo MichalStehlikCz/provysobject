@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.provysobject.ProvysRepository;
 
 import javax.annotation.Nonnull;
@@ -27,7 +28,7 @@ class TestObjectManagerImpl extends ProvysObjectManagerImpl<ProvysRepository, Te
 
     @Nonnull
     @Override
-    protected TestObjectProxyImpl getNewProxy(BigInteger id) {
+    protected TestObjectProxyImpl getNewProxy(DtUid id) {
         return new TestObjectProxyImpl(this, id);
     }
 

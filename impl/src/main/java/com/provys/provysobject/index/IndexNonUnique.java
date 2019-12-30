@@ -1,5 +1,6 @@
 package com.provys.provysobject.index;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.common.exception.InternalException;
 import com.provys.provysobject.impl.ProvysObjectProxy;
 import com.provys.provysobject.impl.ProvysObjectValue;
@@ -19,13 +20,13 @@ import java.util.stream.Collectors;
  * if all values are loaded in memory - otherwise database lookup will still be needed and thus it doesn't make sense
  * to use index...
  */
-public final class IndexNonUnique<V extends ProvysObjectValue, P extends ProvysObjectProxy<?, V>, C> extends IndexBase<V, P>
-        implements Index<V, P> {
+public final class IndexNonUnique<V extends ProvysObjectValue, P extends ProvysObjectProxy<?, V>, C>
+        extends IndexBase<V, P> implements Index<V, P> {
 
     private static final Logger LOG = LogManager.getLogger(IndexNonUnique.class);
 
     private final Function<V, C> attrFunction;
-    private final Map<C, Map<BigInteger, P>> map;
+    private final Map<C, Map<DtUid, P>> map;
 
     public IndexNonUnique(String name, Function<V, C> attrFunction) {
         super(name);

@@ -1,9 +1,9 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.provysobject.ProvysNmObject;
 
 import javax.annotation.Nonnull;
-import java.math.BigInteger;
 
 @SuppressWarnings("WeakerAccess") // used as basis for subclassing in other modules
 public abstract class ProvysNmObjectProxyImpl<O extends ProvysNmObject, V extends ProvysNmObjectValue,
@@ -11,7 +11,7 @@ public abstract class ProvysNmObjectProxyImpl<O extends ProvysNmObject, V extend
         extends ProvysObjectProxyImpl<O, V, P, M> implements ProvysNmObjectProxy<O, V>,  ProvysNmObject {
 
     @SuppressWarnings("WeakerAccess") // class used as basis for subclassing in other packages
-    protected ProvysNmObjectProxyImpl(M manager, BigInteger id) {
+    protected ProvysNmObjectProxyImpl(M manager, DtUid id) {
         super(manager, id);
     }
 

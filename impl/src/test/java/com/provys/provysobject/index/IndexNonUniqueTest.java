@@ -1,9 +1,11 @@
 package com.provys.provysobject.index;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.provysobject.impl.TestNmObjectProxyImpl;
 import com.provys.provysobject.impl.TestNmObjectValue;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -19,13 +21,13 @@ class IndexNonUniqueTest {
         var proxy2 = mock(TestNmObjectProxyImpl.class);
         var proxy3 = mock(TestNmObjectProxyImpl.class);
         var textValue1 = "Test";
-        var value1_1 = new TestNmObjectValue(BigInteger.valueOf(1), "NAME1", textValue1);
-        var value1_2 = new TestNmObjectValue(BigInteger.valueOf(2), "NAME2", textValue1);
-        var value1_3 = new TestNmObjectValue(BigInteger.valueOf(3), "NAME3", textValue1);
+        var value1_1 = new TestNmObjectValue(DtUid.of(1), "NAME1", textValue1);
+        var value1_2 = new TestNmObjectValue(DtUid.of(2), "NAME2", textValue1);
+        var value1_3 = new TestNmObjectValue(DtUid.of(3), "NAME3", textValue1);
         var textValue2 = "Test2";
-        var value2_1 = new TestNmObjectValue(BigInteger.valueOf(1), "NAME1", textValue2);
-        var value2_2 = new TestNmObjectValue(BigInteger.valueOf(2), "NAME2", textValue2);
-        var value2_3 = new TestNmObjectValue(BigInteger.valueOf(3), "NAME3", textValue2);
+        var value2_1 = new TestNmObjectValue(DtUid.of(1), "NAME1", textValue2);
+        var value2_2 = new TestNmObjectValue(DtUid.of(2), "NAME2", textValue2);
+        var value2_3 = new TestNmObjectValue(DtUid.of(3), "NAME3", textValue2);
         var indexName = "testIndex";
         var index = new IndexNonUnique<TestNmObjectValue, TestNmObjectProxyImpl, String>(indexName,
                 val -> val.getValue().orElse(null));
@@ -41,8 +43,8 @@ class IndexNonUniqueTest {
         assertThat(index.get(textValue1)).isEmpty();
         assertThat(index.get(textValue2)).isEmpty();
         // set value first string
-        when(proxy1.getId()).thenReturn(BigInteger.valueOf(1));
-        when(proxy2.getId()).thenReturn(BigInteger.valueOf(2));
+        when(proxy1.getId()).thenReturn(DtUid.of(1));
+        when(proxy2.getId()).thenReturn(DtUid.of(2));
         index.set(textValue1, List.of(proxy1, proxy2));
         assertThat(index.get(textValue1).orElseThrow(() -> new RuntimeException("Collection expected"))).
                 containsExactlyInAnyOrder(proxy1, proxy2);
@@ -62,7 +64,7 @@ class IndexNonUniqueTest {
                 containsExactlyInAnyOrder(proxy2);
         assertThat(index.get(textValue2)).isEmpty();
         // init value 2
-        when(proxy1.getId()).thenReturn(BigInteger.valueOf(1));
+        when(proxy1.getId()).thenReturn(DtUid.of(1));
         index.set(textValue2, List.of(proxy1));
         assertThat(index.get(textValue1).orElseThrow(() -> new RuntimeException("Collection expected"))).
                 containsExactlyInAnyOrder(proxy2);

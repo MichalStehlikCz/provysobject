@@ -1,5 +1,7 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -9,20 +11,20 @@ import java.util.Objects;
  */
 class TestNmObjectSource {
     @Nonnull
-    private final BigInteger id;
+    private final DtUid id;
     @Nonnull
     private final String nameNm;
     @Nonnull
     private final String value;
 
-    TestNmObjectSource(BigInteger id, String nameNm, String value) {
+    TestNmObjectSource(DtUid id, String nameNm, String value) {
         this.id = Objects.requireNonNull(id);
         this.nameNm = Objects.requireNonNull(nameNm);
         this.value = Objects.requireNonNull(value);
     }
 
     @Nonnull
-    BigInteger getId() {
+    DtUid getId() {
         return id;
     }
 

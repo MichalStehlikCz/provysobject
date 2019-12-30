@@ -1,5 +1,7 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
@@ -20,7 +22,7 @@ public class TestNmObjectLoaderImpl extends ProvysNmObjectLoaderImpl<TestNmObjec
 
     @Nonnull
     @Override
-    protected LoadRunner getLoadRunnerById(TestNmObjectManagerImpl manager, BigInteger id) {
+    protected LoadRunner getLoadRunnerById(TestNmObjectManagerImpl manager, DtUid id) {
         return new LoadRunner(manager, List.of(id), null);
     }
 
@@ -34,11 +36,11 @@ public class TestNmObjectLoaderImpl extends ProvysNmObjectLoaderImpl<TestNmObjec
             TestNmObjectProxyImpl, TestNmObjectManagerImpl> {
 
         @Nullable
-        private final Set<BigInteger> ids;
+        private final Set<DtUid> ids;
         @Nullable
         private final Set<String> nameNms;
 
-        LoadRunner(TestNmObjectManagerImpl manager, @Nullable Collection<BigInteger> ids,
+        LoadRunner(TestNmObjectManagerImpl manager, @Nullable Collection<DtUid> ids,
                    @Nullable Collection<String> nameNms) {
             super(manager);
             if (ids != null) {
@@ -56,8 +58,8 @@ public class TestNmObjectLoaderImpl extends ProvysNmObjectLoaderImpl<TestNmObjec
         @Nonnull
         @Override
         protected List<TestNmObjectValue> select() {
-            return Stream.of(new TestNmObjectSource(BigInteger.valueOf(1), "NM1", "Test value"),
-                    new TestNmObjectSource(BigInteger.valueOf(5), "NM5", "Another test value"))
+            return Stream.of(new TestNmObjectSource(DtUid.of(1), "NM1", "Test value"),
+                    new TestNmObjectSource(DtUid.of(5), "NM5", "Another test value"))
                     .filter(objectSource -> (ids == null) || (ids.contains(objectSource.getId())))
                     .filter(objectSource -> (nameNms == null) || (nameNms.contains(objectSource.getNameNm())))
                     .map(sourceObject -> new TestNmObjectValue(sourceObject.getId(), sourceObject.getNameNm(), sourceObject.getValue()))

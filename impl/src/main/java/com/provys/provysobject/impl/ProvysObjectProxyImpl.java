@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.common.exception.InternalException;
 import com.provys.provysobject.ProvysObject;
 import org.apache.logging.log4j.LogManager;
@@ -44,13 +45,13 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     @Nonnull
     private final M manager;
     @Nonnull
-    private final BigInteger id;
+    private final DtUid id;
     private volatile long lastUsed = 0;
     @Nullable
     private V valueObject;
     private boolean deleted = false;
 
-    public ProvysObjectProxyImpl(M manager, BigInteger id) {
+    public ProvysObjectProxyImpl(M manager, DtUid id) {
         this.manager = Objects.requireNonNull(manager);
         this.id = Objects.requireNonNull(id);
     }
@@ -153,7 +154,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
 
     @Nonnull
     @Override
-    public BigInteger getId() {
+    public DtUid getId() {
         if (deleted) {
             throw new InternalException(LOG, "Cannot get Id of deleted " + getManager().getEntityNm() + " proxy");
         }
@@ -170,7 +171,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     public boolean equals(@Nullable Object other) {
         if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
-        ProvysObjectProxyImpl otherProxy = (ProvysObjectProxyImpl) other;
+        var otherProxy = (ProvysObjectProxyImpl<?, ?, ?, ?>) other;
         return getId().equals(otherProxy.getId());
     }
 

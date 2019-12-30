@@ -1,5 +1,7 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlTransient;
@@ -15,14 +17,14 @@ import java.util.Objects;
 public abstract class ProvysObjectValue {
 
     @Nonnull
-    private final BigInteger id;
+    private final DtUid id;
 
-    public ProvysObjectValue(BigInteger id) {
+    public ProvysObjectValue(DtUid id) {
         this.id = Objects.requireNonNull(id);
     }
 
     @Nonnull
-    public BigInteger getId() {
+    public DtUid getId() {
         return id;
     }
 

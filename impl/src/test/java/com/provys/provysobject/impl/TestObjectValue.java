@@ -1,5 +1,7 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -12,7 +14,7 @@ class TestObjectValue extends ProvysObjectValue {
     @Nonnull
     private final String value;
 
-    TestObjectValue(BigInteger id, String value) {
+    TestObjectValue(DtUid id, String value) {
         super(id);
         this.value = Objects.requireNonNull(value);
     }

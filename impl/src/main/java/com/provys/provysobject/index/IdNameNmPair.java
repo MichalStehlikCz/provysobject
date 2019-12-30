@@ -1,5 +1,7 @@
 package com.provys.provysobject.index;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigInteger;
@@ -11,7 +13,7 @@ import java.util.Objects;
 @SuppressWarnings("WeakerAccess") // support class for use in other modules
 public final class IdNameNmPair {
     @Nonnull
-    private final BigInteger id;
+    private final DtUid id;
     @Nonnull
     private final String nameNm;
 
@@ -21,7 +23,7 @@ public final class IdNameNmPair {
      * @param id is Id value
      * @param nameNm is internal name value
      */
-    public IdNameNmPair(BigInteger id, String nameNm) {
+    public IdNameNmPair(DtUid id, String nameNm) {
         this.id = Objects.requireNonNull(id);
         this.nameNm = Objects.requireNonNull(nameNm);
     }
@@ -30,7 +32,7 @@ public final class IdNameNmPair {
      * @return get Id value from pair
      */
     @Nonnull
-    public BigInteger getId() {
+    public DtUid getId() {
         return id;
     }
 

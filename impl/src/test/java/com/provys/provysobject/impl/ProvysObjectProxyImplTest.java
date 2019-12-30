@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.common.exception.InternalException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +23,7 @@ class ProvysObjectProxyImplTest {
     @SuppressWarnings("squid:S2925") // just wanted to ensure time have some room for change...
     void getLastUsed() {
         var manager = mock(TestObjectManagerImpl.class);
-        var proxy = new TestObjectProxyImpl(manager, BigInteger.valueOf(5));
+        var proxy = new TestObjectProxyImpl(manager, DtUid.of(5));
         long lowerBound = System.currentTimeMillis();
         try {
             Thread.sleep(20);
@@ -41,19 +42,19 @@ class ProvysObjectProxyImplTest {
     @Test
     void getManagerTest() {
         var manager = mock(TestObjectManagerImpl.class);
-        assertThat(new TestObjectProxyImpl(manager, BigInteger.valueOf(5)).getManager()).isSameAs(manager);
+        assertThat(new TestObjectProxyImpl(manager, DtUid.of(5)).getManager()).isSameAs(manager);
     }
 
     @Test
     void getValueObject() {
         var manager = mock(TestObjectManagerImpl.class);
-        var proxy = new TestObjectProxyImpl(manager, BigInteger.valueOf(4));
+        var proxy = new TestObjectProxyImpl(manager, DtUid.of(4));
         assertThat(proxy.getValueObject()).isEmpty();
-        var value1 = new TestObjectValue(BigInteger.valueOf(4), "VALUE1");
+        var value1 = new TestObjectValue(DtUid.of(4), "VALUE1");
         verify(manager, times(0)).registerUpdate(any(), any(), any());
         proxy.setValueObject(value1);
         verify(manager).registerUpdate(proxy, null, value1);
-        var value2 = new TestObjectValue(BigInteger.valueOf(4), "VALUE2");
+        var value2 = new TestObjectValue(DtUid.of(4), "VALUE2");
         proxy.setValueObject(value2);
         verify(manager).registerUpdate(proxy, value1, value2);
         assertThat(proxy.getValueObject()).containsSame(value2);
@@ -65,7 +66,7 @@ class ProvysObjectProxyImplTest {
     @Test
     void deletedTest() {
         var manager = mock(TestObjectManagerImpl.class);
-        var proxy = new TestObjectProxyImpl(manager, BigInteger.valueOf(4));
+        var proxy = new TestObjectProxyImpl(manager, DtUid.of(4));
         assertThat(proxy.isDeleted()).isFalse();
         proxy.deleted();
         assertThat(proxy.isDeleted()).isTrue();
@@ -73,7 +74,7 @@ class ProvysObjectProxyImplTest {
         assertThatThrownBy(proxy::getId).isInstanceOf(InternalException.class).hasMessageContaining("deleted");
         assertThatThrownBy(proxy::discardValueObject).isInstanceOf(InternalException.class).
                 hasMessageContaining("deleted");
-        var value1 = new TestObjectValue(BigInteger.valueOf(5), "test");
+        var value1 = new TestObjectValue(DtUid.of(5), "test");
         assertThatThrownBy(() -> proxy.setValueObject(value1)).isInstanceOf(InternalException.class).
                 hasMessageContaining("deleted");
     }
@@ -81,10 +82,10 @@ class ProvysObjectProxyImplTest {
     @Test
     void validateValueObjectTest() {
         var manager = mock(TestObjectManagerImpl.class);
-        var proxy = new TestObjectProxyImpl(manager, BigInteger.valueOf(4));
+        var proxy = new TestObjectProxyImpl(manager, DtUid.of(4));
         assertThatThrownBy(proxy::validateValueObject).isInstanceOf(InternalException.class).
                 hasMessageContaining("value is empty");
-        var value = new TestObjectValue(BigInteger.valueOf(4), "Test");
+        var value = new TestObjectValue(DtUid.of(4), "Test");
         proxy.setValueObject(value);
         assertThat(proxy.validateValueObject()).isEqualTo(value);
     }
@@ -92,13 +93,13 @@ class ProvysObjectProxyImplTest {
     @Nonnull
     static Stream<Object[]> equalsTest() {
         return Stream.of(
-                new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(5)),
-                        new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(5)), true}
-                , new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(5)),
+                new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(5)),
+                        new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(5)), true}
+                , new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(5)),
                         null, false}
-                , new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(5)),
-                        new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(6)), false}
-                , new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(5)),
+                , new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(5)),
+                        new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(6)), false}
+                , new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(5)),
                         "xxx", false}
         );
     }
@@ -112,10 +113,10 @@ class ProvysObjectProxyImplTest {
     @Nonnull
     static Stream<Object[]> hashCodeTest() {
         return Stream.of(
-                new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(5)),
-                        new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(5)), true}
-                , new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(5)),
-                        new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), BigInteger.valueOf(6)), false}
+                new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(5)),
+                        new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(5)), true}
+                , new Object[]{new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(5)),
+                        new TestObjectProxyImpl(mock(TestObjectManagerImpl.class), DtUid.of(6)), false}
         );
     }
 

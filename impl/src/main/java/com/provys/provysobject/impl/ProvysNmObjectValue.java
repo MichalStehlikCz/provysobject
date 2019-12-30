@@ -1,5 +1,7 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,7 +17,7 @@ public abstract class ProvysNmObjectValue extends ProvysObjectValue {
     @Nonnull
     private final String nameNm;
 
-    public ProvysNmObjectValue(BigInteger id, String nameNm) {
+    public ProvysNmObjectValue(DtUid id, String nameNm) {
         super(id);
         this.nameNm = Objects.requireNonNull(nameNm);
     }

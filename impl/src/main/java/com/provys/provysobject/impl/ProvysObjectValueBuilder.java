@@ -1,5 +1,7 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
@@ -18,7 +20,7 @@ import java.util.Objects;
 public abstract class ProvysObjectValueBuilder<B extends ProvysObjectValueBuilder<B, V>, V extends ProvysObjectValue> {
 
     @Nullable
-    private BigInteger id;
+    private DtUid id;
 
     /**
      * Constructor that creates clean copy of builder
@@ -50,7 +52,7 @@ public abstract class ProvysObjectValueBuilder<B extends ProvysObjectValueBuilde
      */
     @NotNull
     @Nullable
-    public BigInteger getId() {
+    public DtUid getId() {
         return id;
     }
 
@@ -60,8 +62,8 @@ public abstract class ProvysObjectValueBuilder<B extends ProvysObjectValueBuilde
      * @param id is new value
      * @return self to support fluent build
      */
-    public B setId(BigInteger id) {
-        this.id = Objects.requireNonNull(id, "Id cannot be set to null");
+    public B setId(@Nullable DtUid id) {
+        this.id = id;
         return self();
     }
 

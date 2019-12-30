@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.provysobject.ProvysObject;
 import com.provys.provysobject.ProvysObjectManager;
 
@@ -13,7 +14,7 @@ public interface ProvysObjectManagerInt<O extends ProvysObject, V extends Provys
         extends ProvysObjectManager<O> {
 
     @Nonnull
-    P getOrAddById(BigInteger id);
+    P getOrAddById(DtUid id);
 
     /**
      * Ask loader to load values to given proxy. Used by proxy for its own refresh, enables isolation of proxy from

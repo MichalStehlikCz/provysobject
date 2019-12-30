@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.common.exception.InternalException;
 import com.provys.provysobject.ProvysRepository;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ class ProvysNmObjectManagerImplTest {
         assertThat(proxy5.getNameNm()).isEqualTo(nameNm5);
         assertThat(manager.getByNameNm(nameNm5)).isSameAs(proxy5);
         assertThat(manager.getById(proxy5.getId())).isSameAs(proxy5);
-        var idValue1 = BigInteger.valueOf(1);
+        var idValue1 = DtUid.of(1);
         var proxy1 = manager.getById(idValue1);
         assertThat(proxy1.getId()).isEqualTo(idValue1);
         assertThat(manager.getById(proxy5.getId())).isSameAs(proxy5);
@@ -45,7 +46,7 @@ class ProvysNmObjectManagerImplTest {
         assertThat(proxy5.getNameNm()).isEqualTo(nameNm5);
         assertThat(manager.getByNameNmIfExists(nameNm5)).containsSame(proxy5);
         assertThat(manager.getById(proxy5.getId())).isSameAs(proxy5);
-        var idValue1 = BigInteger.valueOf(1);
+        var idValue1 = DtUid.of(1);
         var proxy1 = manager.getById(idValue1);
         assertThat(proxy1.getId()).isEqualTo(idValue1);
         assertThat(manager.getById(proxy5.getId())).isSameAs(proxy5);
@@ -62,8 +63,8 @@ class ProvysNmObjectManagerImplTest {
         var repository = mock(ProvysRepository.class);
         var loader = spy(new TestNmObjectLoaderImpl());
         var manager = new TestNmObjectManagerImpl(repository, loader);
-        var proxy5 = manager.getOrAddById(BigInteger.valueOf(5));
-        var value5 = new TestNmObjectValue(BigInteger.valueOf(5), "NM5", "text");
+        var proxy5 = manager.getOrAddById(DtUid.of(5));
+        var value5 = new TestNmObjectValue(DtUid.of(5), "NM5", "text");
         manager.registerUpdate(proxy5,  null, value5);
         assertThat(manager.getByNameNm("NM5")).isSameAs(proxy5);
         verify(loader, times(0)).loadByNameNm(any(), any());// should be in index after register

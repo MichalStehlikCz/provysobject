@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.common.exception.InternalException;
 import com.provys.common.exception.RegularException;
 import com.provys.provysobject.ProvysObject;
@@ -49,7 +50,7 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
     private final L loader;
 
     @Nonnull
-    private final Map<BigInteger, P> provysObjectById;
+    private final Map<DtUid, P> provysObjectById;
     @Nonnull
     private final List<Index<V, P>> indices;
 
@@ -92,7 +93,7 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
 
     @Nonnull
     @Override
-    public O getById(BigInteger id) {
+    public O getById(DtUid id) {
         return getByIdIfExists(id).
                 orElseThrow(() -> new RegularException(LOG, "JAVA_MANAGER_OBJECT_NOT_FOUND",
                         getEntityNm() + " not found by id: " + id,
@@ -101,7 +102,7 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
 
     @Nonnull
     @Override
-    public Optional<O> getByIdIfExists(BigInteger id) {
+    public Optional<O> getByIdIfExists(DtUid id) {
         P provysObject = provysObjectById.get(Objects.requireNonNull(id));
         if (provysObject != null) {
             // object found in cache
@@ -119,7 +120,7 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
     }
 
     @Nonnull
-    protected abstract P getNewProxy(BigInteger id);
+    protected abstract P getNewProxy(DtUid id);
 
     /**
      * Retrieve entity group if already loaded to cache, otherwise create new proxy for given id. Should only be called
@@ -130,7 +131,7 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
      */
     @Nonnull
     @Override
-    public P getOrAddById(BigInteger id) {
+    public P getOrAddById(DtUid id) {
         return provysObjectById.computeIfAbsent(Objects.requireNonNull(id), this::getNewProxy);
     }
 

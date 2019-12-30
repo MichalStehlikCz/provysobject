@@ -1,5 +1,7 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Optional;
@@ -7,7 +9,7 @@ import java.util.Optional;
 public class TestNmObjectProxyImpl extends ProvysNmObjectProxyImpl<TestNmObject, TestNmObjectValue,
         TestNmObjectProxyImpl, TestNmObjectManagerImpl> implements TestNmObject {
 
-    TestNmObjectProxyImpl(TestNmObjectManagerImpl manager, BigInteger id) {
+    TestNmObjectProxyImpl(TestNmObjectManagerImpl manager, DtUid id) {
         super(manager, id);
     }
 

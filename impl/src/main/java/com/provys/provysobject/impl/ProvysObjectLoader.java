@@ -1,5 +1,6 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
 import com.provys.provysobject.ProvysObject;
 
 import javax.annotation.Nonnull;
@@ -17,7 +18,7 @@ import java.util.Optional;
 public interface ProvysObjectLoader<O extends ProvysObject, V extends ProvysObjectValue,
         P extends ProvysObjectProxy<O, V>, M extends ProvysObjectManagerInt<O, V, P>> {
     @Nonnull
-    Optional<P> loadById(M manager, BigInteger id);
+    Optional<P> loadById(M manager, DtUid id);
 
     void loadValue(M manager, P entityGrpProxy);
 

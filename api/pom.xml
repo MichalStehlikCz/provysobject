@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>com.provys.common</groupId>
-            <artifactId>common-exception</artifactId>
+            <artifactId>common-datatype</artifactId>
         </dependency>
     </dependencies>
 </project>

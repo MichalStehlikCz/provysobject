@@ -1,12 +1,14 @@
 package com.provys.provysobject.impl;
 
+import com.provys.common.datatype.DtUid;
+
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
 
 class TestObjectProxyImpl extends ProvysObjectProxyImpl<TestObject, TestObjectValue, TestObjectProxyImpl,
         TestObjectManagerImpl> implements TestObject {
 
-    TestObjectProxyImpl(TestObjectManagerImpl manager, BigInteger id) {
+    TestObjectProxyImpl(TestObjectManagerImpl manager, DtUid id) {
         super(manager, id);
     }
 
