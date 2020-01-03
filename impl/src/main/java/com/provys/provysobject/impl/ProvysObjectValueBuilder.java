@@ -3,9 +3,7 @@ package com.provys.provysobject.impl;
 import com.provys.common.datatype.DtUid;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
-import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -50,7 +48,6 @@ public abstract class ProvysObjectValueBuilder<B extends ProvysObjectValueBuilde
     /**
      * @return value of Id property
      */
-    @NotNull
     @Nullable
     public DtUid getId() {
         return id;

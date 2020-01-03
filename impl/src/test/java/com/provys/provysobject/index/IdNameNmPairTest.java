@@ -16,25 +16,25 @@ class IdNameNmPairTest {
 
     @Test
     void getIdTest() {
-        assertThat(new IdNameNmPair(DtUid.of(32), "NM").getId()).isEqualTo(DtUid.of(32));
+        assertThat(new IdNameNmPair(DtUid.valueOf("32"), "NM").getId()).isEqualTo(DtUid.valueOf("32"));
     }
 
     @Test
     void getNameNmTest() {
-        assertThat(new IdNameNmPair(DtUid.of(32), "NM").getNameNm()).isEqualTo("NM");
+        assertThat(new IdNameNmPair(DtUid.valueOf("32"), "NM").getNameNm()).isEqualTo("NM");
     }
 
     @Nonnull
     static Stream<Object[]> equalsTest() {
         return Stream.of(
-                new Object[]{new IdNameNmPair(DtUid.of(5), "NM"),
-                        new IdNameNmPair(DtUid.of(5), "NM"), true}
-                , new Object[]{new IdNameNmPair(DtUid.of(5), "NM"), null, false}
-                , new Object[]{new IdNameNmPair(DtUid.of(5), "NM"),
-                        new IdNameNmPair(DtUid.of(6), "NM"), false}
-                , new Object[]{new IdNameNmPair(DtUid.of(5), "NM"),
-                        new IdNameNmPair(DtUid.of(5), "NN"), false}
-                , new Object[]{new IdNameNmPair(DtUid.of(5), "NM"), "xxx", false}
+                new Object[]{new IdNameNmPair(DtUid.valueOf("5"), "NM"),
+                        new IdNameNmPair(DtUid.valueOf("5"), "NM"), true}
+                , new Object[]{new IdNameNmPair(DtUid.valueOf("5"), "NM"), null, false}
+                , new Object[]{new IdNameNmPair(DtUid.valueOf("5"), "NM"),
+                        new IdNameNmPair(DtUid.valueOf("6"), "NM"), false}
+                , new Object[]{new IdNameNmPair(DtUid.valueOf("5"), "NM"),
+                        new IdNameNmPair(DtUid.valueOf("5"), "NN"), false}
+                , new Object[]{new IdNameNmPair(DtUid.valueOf("5"), "NM"), "xxx", false}
         );
     }
 
@@ -47,13 +47,13 @@ class IdNameNmPairTest {
 
     @Test
     void hashCodeTest() {
-        assertThat(new IdNameNmPair(DtUid.of(32), "NM").hashCode()).
-                isEqualTo(new IdNameNmPair(DtUid.of(32), "NM").hashCode());
+        assertThat(new IdNameNmPair(DtUid.valueOf("32"), "NM").hashCode()).
+                isEqualTo(new IdNameNmPair(DtUid.valueOf("32"), "NM").hashCode());
     }
 
     @Test
     void toStringTest() {
-        assertThat(new IdNameNmPair(DtUid.of(4), "NM").toString()).startsWith("IdNameNmPair{").
+        assertThat(new IdNameNmPair(DtUid.valueOf("4"), "NM").toString()).startsWith("IdNameNmPair{").
                 contains("id=ID4").contains("nameNm='NM'");
     }
 }

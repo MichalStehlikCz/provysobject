@@ -58,8 +58,8 @@ public class TestNmObjectLoaderImpl extends ProvysNmObjectLoaderImpl<TestNmObjec
         @Nonnull
         @Override
         protected List<TestNmObjectValue> select() {
-            return Stream.of(new TestNmObjectSource(DtUid.of(1), "NM1", "Test value"),
-                    new TestNmObjectSource(DtUid.of(5), "NM5", "Another test value"))
+            return Stream.of(new TestNmObjectSource(DtUid.valueOf("1"), "NM1", "Test value"),
+                    new TestNmObjectSource(DtUid.valueOf("5"), "NM5", "Another test value"))
                     .filter(objectSource -> (ids == null) || (ids.contains(objectSource.getId())))
                     .filter(objectSource -> (nameNms == null) || (nameNms.contains(objectSource.getNameNm())))
                     .map(sourceObject -> new TestNmObjectValue(sourceObject.getId(), sourceObject.getNameNm(), sourceObject.getValue()))

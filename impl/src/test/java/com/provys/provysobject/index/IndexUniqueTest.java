@@ -16,9 +16,9 @@ class IndexUniqueTest {
     @Test
     void getTest() {
         var proxy = mock(TestNmObjectProxyImpl.class);
-        var value = new TestNmObjectValue(DtUid.of(5), "NAME_NM", "Test");
+        var value = new TestNmObjectValue(DtUid.valueOf("5"), "NAME_NM", "Test");
         var nameNm = "NAME_NM";
-        var value2 = new TestNmObjectValue(DtUid.of(5), "NAME2_NM", "Test2");
+        var value2 = new TestNmObjectValue(DtUid.valueOf("5"), "NAME2_NM", "Test2");
         var nameNm2 = "NAME2_NM";
         var index = new IndexUnique<TestNmObjectValue, TestNmObjectProxyImpl, String>("testIndex",
                 ProvysNmObjectValue::getNameNm, 10);

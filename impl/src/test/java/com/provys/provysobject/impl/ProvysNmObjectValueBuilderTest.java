@@ -13,7 +13,7 @@ class ProvysNmObjectValueBuilderTest {
     @Test
     void fromValueTest() {
         var builder = new TestNmObjectValueBuilder(
-                new TestNmObjectValue(DtUid.of(10), "NM", "value"));
+                new TestNmObjectValue(DtUid.valueOf("10"), "NM", "value"));
         assertThat(builder.getNameNm()).isEqualTo("NM");
         assertThat(builder.getUpdNameNm()).isTrue();
     }
@@ -50,22 +50,22 @@ class ProvysNmObjectValueBuilderTest {
     @Test
     void applyTest() {
         var builder = new TestNmObjectValueBuilder();
-        builder.apply(new TestNmObjectValue(DtUid.of(10), "NM", "Test"));
+        builder.apply(new TestNmObjectValue(DtUid.valueOf("10"), "NM", "Test"));
         assertThat(builder.getNameNm()).isEqualTo("NM");
-        builder.apply(new TestNmObjectValue(DtUid.of(10), "TEST_NM", "Test"));
+        builder.apply(new TestNmObjectValue(DtUid.valueOf("10"), "TEST_NM", "Test"));
         assertThat(builder.getNameNm()).isEqualTo("NM");
     }
 
     @Test
     void notChangedTest() {
         var builder = new TestNmObjectValueBuilder();
-        var value = new TestNmObjectValue(DtUid.of(10), "NM", "Test");
+        var value = new TestNmObjectValue(DtUid.valueOf("10"), "NM", "Test");
         assertThat(builder.notChanged(value)).isTrue();
-        builder.setId(DtUid.of(10));
+        builder.setId(DtUid.valueOf("10"));
         assertThat(builder.notChanged(value)).isTrue();
-        builder.setId(DtUid.of(20));
+        builder.setId(DtUid.valueOf("20"));
         assertThat(builder.notChanged(value)).isFalse();
-        builder.setId(DtUid.of(10))
+        builder.setId(DtUid.valueOf("10"))
                 .setNameNm("TEST");
         assertThat(builder.notChanged(value)).isFalse();
         builder.setNameNm("NM");
@@ -74,7 +74,7 @@ class ProvysNmObjectValueBuilderTest {
 
     @Test
     void testToStringTest() {
-        assertThat(new TestNmObjectValueBuilder().setId(DtUid.of(10)).setNameNm("Name Nm").toString())
+        assertThat(new TestNmObjectValueBuilder().setId(DtUid.valueOf("10")).setNameNm("Name Nm").toString())
                 .isEqualTo("ProvysNmObjectValueBuilder{nameNm='Name Nm'} ProvysObjectValueBuilder{id=ID10}");
     }
 }

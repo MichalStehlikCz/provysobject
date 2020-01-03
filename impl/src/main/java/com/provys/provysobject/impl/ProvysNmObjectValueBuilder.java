@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import javax.json.bind.annotation.JsonbTransient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,7 +22,6 @@ public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBu
     private static final Logger LOG = LogManager.getLogger(ProvysNmObjectValueBuilder.class);
 
     @Nullable
-    @NotNull
     private String nameNm;
 
     /**

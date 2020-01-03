@@ -43,10 +43,10 @@ public class TestObjectLoaderImpl extends ProvysObjectLoaderImpl<TestObject, Tes
         @Nonnull
         @Override
         protected List<TestObjectValue> select() {
-            return Stream.of(new TestObjectSource(DtUid.of(1), "Test value"),
-                    new TestObjectSource(DtUid.of(5), "Another test value"),
-                    new TestObjectSource(DtUid.of(6), "Duplicate test value"),
-                    new TestObjectSource(DtUid.of(6), "Duplicate test value - row 2"))
+            return Stream.of(new TestObjectSource(DtUid.valueOf("1"), "Test value"),
+                    new TestObjectSource(DtUid.valueOf("5"), "Another test value"),
+                    new TestObjectSource(DtUid.valueOf("6"), "Duplicate test value"),
+                    new TestObjectSource(DtUid.valueOf("6"), "Duplicate test value - row 2"))
                     .filter(objectSource -> (ids == null) || (ids.contains(objectSource.getId())))
                     .map(sourceObject -> new TestObjectValue(sourceObject.getId(), sourceObject.getValue()))
                     .collect(Collectors.toList());

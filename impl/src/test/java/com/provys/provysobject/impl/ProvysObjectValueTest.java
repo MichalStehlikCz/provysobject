@@ -20,19 +20,19 @@ class ProvysObjectValueTest {
     }
 
     void getIdTest() {
-        var idValue5 = DtUid.of(5);
+        var idValue5 = DtUid.valueOf("5");
         assertThat(new TestProvysObjectValue(idValue5).getId()).isEqualTo(idValue5);
     }
 
     @Nonnull
     static Stream<Object[]> equalsTest() {
         return Stream.of(
-                new Object[]{new TestProvysObjectValue(DtUid.of(5)),
-                        new TestProvysObjectValue(DtUid.of(5)), true}
-                , new Object[]{new TestProvysObjectValue(DtUid.of(5)), null, false}
-                , new Object[]{new TestProvysObjectValue(DtUid.of(5)),
-                        new TestProvysObjectValue(DtUid.of(6)), false}
-                , new Object[]{new TestProvysObjectValue(DtUid.of(5)), "xxx", false}
+                new Object[]{new TestProvysObjectValue(DtUid.valueOf("5")),
+                        new TestProvysObjectValue(DtUid.valueOf("5")), true}
+                , new Object[]{new TestProvysObjectValue(DtUid.valueOf("5")), null, false}
+                , new Object[]{new TestProvysObjectValue(DtUid.valueOf("5")),
+                        new TestProvysObjectValue(DtUid.valueOf("6")), false}
+                , new Object[]{new TestProvysObjectValue(DtUid.valueOf("5")), "xxx", false}
         );
     }
 
@@ -45,10 +45,10 @@ class ProvysObjectValueTest {
     @Nonnull
     static Stream<Object[]> hashCodeTest() {
         return Stream.of(
-                new Object[]{new TestProvysObjectValue(DtUid.of(5)),
-                        new TestProvysObjectValue(DtUid.of(5)), true}
-                , new Object[]{new TestProvysObjectValue(DtUid.of(5)),
-                        new TestProvysObjectValue(DtUid.of(6)), false}
+                new Object[]{new TestProvysObjectValue(DtUid.valueOf("5")),
+                        new TestProvysObjectValue(DtUid.valueOf("5")), true}
+                , new Object[]{new TestProvysObjectValue(DtUid.valueOf("5")),
+                        new TestProvysObjectValue(DtUid.valueOf("6")), false}
         );
     }
 

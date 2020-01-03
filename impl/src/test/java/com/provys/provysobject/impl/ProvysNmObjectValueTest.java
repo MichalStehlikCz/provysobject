@@ -22,20 +22,20 @@ class ProvysNmObjectValueTest {
 
     @Test
     void getNameNmTest() {
-        assertThat(new TestNmProvysObjectValue(DtUid.of(3), "NM").getNameNm()).isEqualTo("NM");
+        assertThat(new TestNmProvysObjectValue(DtUid.valueOf("3"), "NM").getNameNm()).isEqualTo("NM");
     }
 
     @Nonnull
     static Stream<Object[]> equalsTest() {
         return Stream.of(
-                new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"),
-                        new TestNmProvysObjectValue(DtUid.of(5), "NM"), true}
-                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM1"),
-                        new TestNmProvysObjectValue(DtUid.of(5), "NM2"), false}
-                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"), null, false}
-                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"),
-                        new TestNmProvysObjectValue(DtUid.of(6), "NM"), false}
-                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"), "xxx", false}
+                new Object[]{new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM"),
+                        new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM"), true}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM1"),
+                        new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM2"), false}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM"), null, false}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM"),
+                        new TestNmProvysObjectValue(DtUid.valueOf("6"), "NM"), false}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM"), "xxx", false}
         );
     }
 
@@ -48,10 +48,10 @@ class ProvysNmObjectValueTest {
     @Nonnull
     static Stream<Object[]> hashCodeTest() {
         return Stream.of(
-                new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"),
-                        new TestNmProvysObjectValue(DtUid.of(5), "NM"), true}
-                , new Object[]{new TestNmProvysObjectValue(DtUid.of(5), "NM"),
-                        new TestNmProvysObjectValue(DtUid.of(6), "NM"), false}
+                new Object[]{new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM"),
+                        new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM"), true}
+                , new Object[]{new TestNmProvysObjectValue(DtUid.valueOf("5"), "NM"),
+                        new TestNmProvysObjectValue(DtUid.valueOf("6"), "NM"), false}
         );
     }
 
