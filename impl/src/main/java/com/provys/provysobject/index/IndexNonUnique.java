@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -37,8 +36,7 @@ public final class IndexNonUnique<V extends ProvysObjectValue, P extends ProvysO
     private void addToAttrValue(P proxy, C attrValue) {
         var valueMap = map.get(attrValue);
         if ((valueMap != null) && (valueMap.putIfAbsent(proxy.getId(), proxy) != null)) {
-            throw new InternalException(LOG, "Found duplicate Id value in index " + getName() + ", id "
-                    + proxy.getId());
+            throw new InternalException("Found duplicate Id value in index " + getName() + ", id " + proxy.getId());
         }
     }
 

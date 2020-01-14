@@ -3,15 +3,9 @@ package com.provys.provysobject.impl;
 import com.provys.common.datatype.DtUid;
 import com.provys.common.exception.InternalException;
 import com.provys.provysobject.ProvysObject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
-import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,9 +32,6 @@ import java.util.Optional;
 public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends ProvysObjectValue,
         P extends ProvysObjectProxy<O, V>, M extends ProvysObjectManagerInt<O, V, P>>
         implements ProvysObjectProxy<O, V> {
-
-    @Nonnull
-    private static final Logger LOG = LogManager.getLogger(ProvysObjectProxyImpl.class);
 
     @Nonnull
     private final M manager;
@@ -87,7 +78,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     @SuppressWarnings("squid:S1192") // it is easier to have error message on each place and not construct them from constants
     public synchronized void setValueObject(V valueObject) {
         if (deleted) {
-            throw new InternalException(LOG, "Cannot set value of deleted " + getManager().getEntityNm() + " proxy");
+            throw new InternalException("Cannot set value of deleted " + getManager().getEntityNm() + " proxy");
         }
         if (this.valueObject != valueObject) {
             var oldValue = this.valueObject;
@@ -100,7 +91,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     @Override
     public synchronized void discardValueObject() {
         if (deleted) {
-            throw new InternalException(LOG, "Cannot discard value of deleted " + getManager().getEntityNm() + " proxy");
+            throw new InternalException("Cannot discard value of deleted " + getManager().getEntityNm() + " proxy");
         }
         if (this.valueObject != null) {
             getManager().registerUpdate(self(), this.valueObject, null);
@@ -122,7 +113,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     @Nonnull
     protected synchronized Optional<V> getValueObject() {
         if (deleted) {
-            throw new InternalException(LOG, "Cannot get value of deleted " + getManager().getEntityNm() + " proxy");
+            throw new InternalException("Cannot get value of deleted " + getManager().getEntityNm() + " proxy");
         }
         setLastUsed();
         return Optional.ofNullable(valueObject);
@@ -133,7 +124,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
         var result = valueObject; // if somebody discards valueObject, we want to retrieve older value rather than null
         if (result == null) {
             if (deleted) {
-                throw new InternalException(LOG, "Cannot validate value of deleted " + getManager().getEntityNm() +
+                throw new InternalException("Cannot validate value of deleted " + getManager().getEntityNm() +
                         " proxy");
             }
             synchronized(this) {
@@ -141,7 +132,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
                     // we might get it via synchronisation... */
                     getManager().loadValueObject(self());
                     if (valueObject == null) {
-                        throw new InternalException(LOG, "Load " + getManager().getEntityNm() +
+                        throw new InternalException("Load " + getManager().getEntityNm() +
                                 " failed - value is empty");
                     }
                 }
@@ -156,7 +147,7 @@ public abstract class ProvysObjectProxyImpl<O extends ProvysObject, V extends Pr
     @Override
     public DtUid getId() {
         if (deleted) {
-            throw new InternalException(LOG, "Cannot get Id of deleted " + getManager().getEntityNm() + " proxy");
+            throw new InternalException("Cannot get Id of deleted " + getManager().getEntityNm() + " proxy");
         }
         return id;
     }

@@ -37,7 +37,7 @@ public abstract class ProvysNmObjectLoaderImpl<O extends ProvysNmObject, V exten
             return Optional.empty();
         }
         if (result.size() > 1) {
-            throw new InternalException(LOG,
+            throw new InternalException(
                     "Incorrect number of " + manager.getEntityNm() + " loaded by internal name " + nameNm + ": "
                             + result.size());
         }

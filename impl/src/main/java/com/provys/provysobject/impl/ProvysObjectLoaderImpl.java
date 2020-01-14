@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
-import java.math.BigInteger;
 import java.util.Optional;
 
 @SuppressWarnings("WeakerAccess") // get load runner methods must be overridden in implementation classes
@@ -30,7 +29,7 @@ public abstract class ProvysObjectLoaderImpl<O extends ProvysObject, V extends P
             return Optional.empty();
         }
         if (result.size() > 1) {
-            throw new InternalException(LOG,
+            throw new InternalException(
                     "Incorrect number of " + manager.getEntityNm() + " loaded by id " + id + ": " + result.size());
         }
         return Optional.of(result.get(0));

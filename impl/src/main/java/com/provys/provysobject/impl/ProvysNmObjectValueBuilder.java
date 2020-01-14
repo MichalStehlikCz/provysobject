@@ -1,8 +1,6 @@
 package com.provys.provysobject.impl;
 
 import com.provys.common.exception.InternalException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import javax.json.bind.annotation.JsonbTransient;
@@ -18,8 +16,6 @@ import java.util.Objects;
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBuilder<B, V>,
         V extends ProvysNmObjectValue> extends ProvysObjectValueBuilder<B, V> {
-
-    private static final Logger LOG = LogManager.getLogger(ProvysNmObjectValueBuilder.class);
 
     @Nullable
     private String nameNm;
@@ -88,7 +84,7 @@ public abstract class ProvysNmObjectValueBuilder<B extends ProvysNmObjectValueBu
      */
     public B setUpdNameNm(boolean updNameNm) {
         if ((nameNm == null) && updNameNm) {
-            throw new InternalException(LOG, "Cannot set updNameNm to true; use setNameNm instead");
+            throw new InternalException("Cannot set updNameNm to true; use setNameNm instead");
         }
         if (!updNameNm) {
             nameNm = null;

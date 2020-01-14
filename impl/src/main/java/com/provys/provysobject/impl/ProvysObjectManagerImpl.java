@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -95,7 +94,7 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
     @Override
     public O getById(DtUid id) {
         return getByIdIfExists(id).
-                orElseThrow(() -> new RegularException(LOG, "JAVA_MANAGER_OBJECT_NOT_FOUND",
+                orElseThrow(() -> new RegularException("JAVA_MANAGER_OBJECT_NOT_FOUND",
                         getEntityNm() + " not found by id: " + id,
                         Map.of("ENTITY_NM", getEntityNm(), "ID", id.toString())));
     }
@@ -154,8 +153,7 @@ public abstract class ProvysObjectManagerImpl<R extends ProvysRepository, O exte
                 index.update(objectProxy, oldValue, newValue);
             }
         } else {
-            throw new InternalException(LOG,
-                    "Register change " + getEntityNm() + " called on unregistered object proxy");
+            throw new InternalException("Register change " + getEntityNm() + " called on unregistered object proxy");
         }
     }
 

@@ -5,8 +5,6 @@ import com.provys.provysobject.ProvysNmObject;
 import com.provys.provysobject.ProvysNmObjectManager;
 import com.provys.provysobject.ProvysRepository;
 import com.provys.provysobject.index.IndexUnique;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -21,9 +19,6 @@ public abstract class ProvysNmObjectManagerImpl<R extends ProvysRepository, O ex
         ProvysNmObjectManager<O> {
 
     @Nonnull
-    private static final Logger LOG = LogManager.getLogger(ProvysNmObjectManagerImpl.class);
-
-    @Nonnull
     private final IndexUnique<V, P, String> provysObjectByNameNm;
 
     public ProvysNmObjectManagerImpl(R repository, L loader, int initialCapacity, int indexCount) {
@@ -36,7 +31,7 @@ public abstract class ProvysNmObjectManagerImpl<R extends ProvysRepository, O ex
     @Nonnull
     @Override
     public O getByNameNm(String nameNm) {
-        return getByNameNmIfExists(nameNm).orElseThrow(() -> new RegularException(LOG,
+        return getByNameNmIfExists(nameNm).orElseThrow(() -> new RegularException(
                 "JAVA_MANAGER_OBJECT_NOT_FOUND_BY_NM",
                 getEntityNm() + " was not found by supplied internal name " + nameNm,
                 Map.of("ENTITY_NM", getEntityNm(), "NAME_NM", nameNm)));

@@ -84,7 +84,7 @@ public abstract class ProvysObjectLoadRunner<O extends ProvysObject, V extends P
             return;
         }
         if (sourceObjects.size()>1) {
-            throw new InternalException(LOG, manager.getEntityNm() +  " load value by Id resulted in multiple rows");
+            throw new InternalException(manager.getEntityNm() +  " load value by Id resulted in multiple rows");
         }
         proxyObject.setValueObject(sourceObjects.get(0));
     }
