@@ -2,31 +2,26 @@ package com.provys.provysobject.impl;
 
 import com.provys.common.datatype.DtUid;
 
-import javax.annotation.Nonnull;
-import java.math.BigInteger;
+class TestObjectProxyImpl extends
+    ProvysObjectProxyImpl<TestObject, TestObjectValue, TestObjectProxyImpl, TestObjectManagerImpl>
+    implements TestObject {
 
-class TestObjectProxyImpl extends ProvysObjectProxyImpl<TestObject, TestObjectValue, TestObjectProxyImpl,
-        TestObjectManagerImpl> implements TestObject {
+  TestObjectProxyImpl(TestObjectManagerImpl manager, DtUid id) {
+    super(manager, id);
+  }
 
-    TestObjectProxyImpl(TestObjectManagerImpl manager, DtUid id) {
-        super(manager, id);
-    }
+  @Override
+  public TestObject selfAsObject() {
+    return this;
+  }
 
-    @Nonnull
-    @Override
-    public TestObject selfAsObject() {
-        return this;
-    }
+  @Override
+  protected TestObjectProxyImpl self() {
+    return this;
+  }
 
-    @Nonnull
-    @Override
-    protected TestObjectProxyImpl self() {
-        return this;
-    }
-
-    @Override
-    public String getValue() {
-        return validateValueObject().getValue();
-    }
-
+  @Override
+  public String getValue() {
+    return validateValueObject().getValue();
+  }
 }

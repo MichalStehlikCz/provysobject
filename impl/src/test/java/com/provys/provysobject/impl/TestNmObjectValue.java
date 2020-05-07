@@ -1,35 +1,43 @@
 package com.provys.provysobject.impl;
 
 import com.provys.common.datatype.DtUid;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+@SuppressWarnings("EqualsAndHashcode") // hash in parent uses id which is sufficient
 public class TestNmObjectValue extends ProvysNmObjectValue {
 
-    @Nullable
-    private final String value;
+  private final @Nullable String value;
 
-    public TestNmObjectValue(DtUid id, String nameNm, @Nullable String value) {
-        super(id, nameNm);
-        this.value = value;
-    }
+  public TestNmObjectValue(DtUid id, String nameNm, @Nullable String value) {
+    super(id, nameNm);
+    this.value = value;
+  }
 
-    @Nonnull
-    public Optional<String> getValue() {
-        return Optional.ofNullable(value);
-    }
+  public @Nullable String getValue() {
+    return value;
+  }
 
-    @Override
-    @SuppressWarnings("squid:S1206") // hash in parent uses id which is sufficient
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TestNmObjectValue)) return false;
-        if (!super.equals(o)) return false;
-        TestNmObjectValue that = (TestNmObjectValue) o;
-        return Objects.equals(getValue(), that.getValue());
+  @Override
+  public boolean equals(@Nullable Object o) {
+    if (this == o) {
+      return true;
     }
+    if (!(o instanceof TestNmObjectValue)) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    TestNmObjectValue that = (TestNmObjectValue) o;
+    return Objects.equals(getValue(), that.getValue());
+  }
+
+  @Override
+  public String toString() {
+    return "TestNmObjectValue{"
+        + "value='" + value + '\''
+        + ", " + super.toString() + '}';
+  }
 }

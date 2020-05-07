@@ -2,13 +2,15 @@ package com.provys.provysobject;
 
 import com.provys.common.datatype.DtUid;
 
-import javax.annotation.Nonnull;
-
-@SuppressWarnings("WeakerAccess") // used as basis for subclassing in other modules
+/**
+ * Interface provided by all provys objects.
+ */
 public interface ProvysObject {
-    /**
-     * @return Id (attribute OBJECT_ID)
-     */
-    @Nonnull
-    DtUid getId();
+
+  /**
+   * Object Id (attribute OBJECT_ID).
+   *
+   * @return Id (attribute OBJECT_ID)
+   */
+  DtUid getId();
 }

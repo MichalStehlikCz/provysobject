@@ -1,12 +1,14 @@
 package com.provys.provysobject;
 
-import javax.annotation.Nonnull;
-
-@SuppressWarnings("WeakerAccess") // used as basis for subclassing in other modules
+/**
+ * Common ancestor for objects using internal name as natural key.
+ */
 public interface ProvysNmObject extends ProvysObject {
-    /**
-     * @return internal name (attribute NAME_NM)
-     */
-    @Nonnull
-    String getNameNm();
+
+  /**
+   * Internal name (attribute NAME_NM).
+   *
+   * @return internal name (attribute NAME_NM)
+   */
+  String getNameNm();
 }

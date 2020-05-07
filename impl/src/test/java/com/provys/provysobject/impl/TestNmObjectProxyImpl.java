@@ -1,10 +1,7 @@
 package com.provys.provysobject.impl;
 
 import com.provys.common.datatype.DtUid;
-
-import javax.annotation.Nonnull;
-import java.math.BigInteger;
-import java.util.Optional;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class TestNmObjectProxyImpl extends ProvysNmObjectProxyImpl<TestNmObject, TestNmObjectValue,
         TestNmObjectProxyImpl, TestNmObjectManagerImpl> implements TestNmObject {
@@ -13,20 +10,18 @@ public class TestNmObjectProxyImpl extends ProvysNmObjectProxyImpl<TestNmObject,
         super(manager, id);
     }
 
-    @Nonnull
     @Override
     protected TestNmObjectProxyImpl self() {
         return this;
     }
 
-    @Nonnull
     @Override
     public TestNmObject selfAsObject() {
         return this;
     }
 
     @Override
-    public Optional<String> getValue() {
+    public @Nullable String getValue() {
         return validateValueObject().getValue();
     }
 }

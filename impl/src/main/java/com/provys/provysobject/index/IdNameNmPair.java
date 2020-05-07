@@ -1,68 +1,70 @@
 package com.provys.provysobject.index;
 
 import com.provys.common.datatype.DtUid;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.math.BigInteger;
-import java.util.Objects;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Simple value class, holding Id + internal name, used for composite indices
+ * Simple value class, holding Id + internal name, used for composite indices.
  */
-@SuppressWarnings("WeakerAccess") // support class for use in other modules
 public final class IdNameNmPair {
-    @Nonnull
-    private final DtUid id;
-    @Nonnull
-    private final String nameNm;
 
-    /**
-     * Create new id + internal name pair
-     *
-     * @param id is Id value
-     * @param nameNm is internal name value
-     */
-    public IdNameNmPair(DtUid id, String nameNm) {
-        this.id = Objects.requireNonNull(id);
-        this.nameNm = Objects.requireNonNull(nameNm);
-    }
+  private final DtUid id;
+  private final String nameNm;
 
-    /**
-     * @return get Id value from pair
-     */
-    @Nonnull
-    public DtUid getId() {
-        return id;
-    }
+  /**
+   * Create new id + internal name pair.
+   *
+   * @param id     is Id value
+   * @param nameNm is internal name value
+   */
+  public IdNameNmPair(DtUid id, String nameNm) {
+    this.id = id;
+    this.nameNm = nameNm;
+  }
 
-    /**
-     * @return internal name value from pair
-     */
-    @Nonnull
-    public String getNameNm() {
-        return nameNm;
-    }
+  /**
+   * Id value from pair.
+   *
+   * @return get Id value from pair
+   */
+  public DtUid getId() {
+    return id;
+  }
 
-    @Override
-    public boolean equals(@Nullable Object o) {
-        if (this == o) return true;
-        if (!(o instanceof IdNameNmPair)) return false;
-        IdNameNmPair that = (IdNameNmPair) o;
-        return getId().equals(that.getId()) &&
-                getNameNm().equals(that.getNameNm());
-    }
+  /**
+   * Internal name value from pair.
+   *
+   * @return internal name value from pair
+   */
+  public String getNameNm() {
+    return nameNm;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getNameNm());
+  @Override
+  public boolean equals(@Nullable Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    IdNameNmPair that = (IdNameNmPair) o;
+    return id.equals(that.id)
+        && nameNm.equals(that.nameNm);
+  }
 
-    @Override
-    public String toString() {
-        return "IdNameNmPair{" +
-                "id=" + id +
-                ", nameNm='" + nameNm + '\'' +
-                '}';
-    }
+  @Override
+  public int hashCode() {
+    int result = id.hashCode();
+    result = 31 * result + nameNm.hashCode();
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "IdNameNmPair{"
+        + "id=" + id
+        + ", nameNm='" + nameNm + '\''
+        + '}';
+  }
 }

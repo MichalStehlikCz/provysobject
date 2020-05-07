@@ -74,7 +74,12 @@ class ProvysNmObjectValueBuilderTest {
 
     @Test
     void testToStringTest() {
-        assertThat(new TestNmObjectValueBuilder().setId(DtUid.valueOf("10")).setNameNm("Name Nm").toString())
-                .isEqualTo("ProvysNmObjectValueBuilder{nameNm='Name Nm'} ProvysObjectValueBuilder{id=ID10}");
+        assertThat(new TestNmObjectValueBuilder()
+            .setId(DtUid.valueOf("10"))
+            .setNameNm("Name Nm")
+            .toString())
+                .isEqualTo("TestNmObjectValueBuilder{value='null', updValue=false, "
+                    + "ProvysNmObjectValueBuilder{nameNm='Name Nm', "
+                    + "ProvysObjectValueBuilder{id=ID10}}}");
     }
 }

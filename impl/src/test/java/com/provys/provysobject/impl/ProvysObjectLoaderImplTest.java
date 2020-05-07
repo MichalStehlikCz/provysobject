@@ -2,6 +2,7 @@ package com.provys.provysobject.impl;
 
 import com.provys.common.datatype.DtUid;
 import com.provys.common.exception.InternalException;
+import com.provys.provysobject.ProvysRepository;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -11,53 +12,45 @@ import static org.mockito.Mockito.*;
 
 class ProvysObjectLoaderImplTest {
 
-    @Test
-    void loadByIdTest() {
-        var loader = new TestObjectLoaderImpl();
-        var manager = mock(TestObjectManagerImpl.class);
-        var proxy5 = mock(TestObjectProxyImpl.class);
-        var idValue5 = DtUid.valueOf("5");
-        when(manager.getOrAddById(idValue5)).thenReturn(proxy5);
-        loader.loadById(manager, idValue5);
-        verify(proxy5).setValueObject(new TestObjectValue(idValue5, "Another test value"));
-        verifyNoMoreInteractions(proxy5);
-    }
+  @Test
+  void loadByIdTest() {
+    var repository = mock(ProvysRepository.class);
+    var loader = new TestObjectLoaderImpl();
+    var manager = new TestObjectManagerImpl(repository, loader);
+    var idValue5 = DtUid.valueOf("5");
+    var proxy5 = manager.getOrAddById(idValue5);
+    loader.loadById(manager, idValue5);
+    assertThat(proxy5.getValue()).isEqualTo("Another test value");
+  }
 
-    @Test
-    void loadValueTest() {
-        var loader = new TestObjectLoaderImpl();
-        var manager = mock(TestObjectManagerImpl.class);
-        var proxy5 = mock(TestObjectProxyImpl.class);
-        var idValue5 = DtUid.valueOf("5");
-        when(proxy5.getId()).thenReturn(idValue5);
-        loader.loadValue(manager, proxy5);
-        verify(proxy5).getId();
-        verify(proxy5).setValueObject(new TestObjectValue(idValue5, "Another test value"));
-        verifyNoMoreInteractions(proxy5);
-        var proxy6 = mock(TestObjectProxyImpl.class);
-        var idValue6 = DtUid.valueOf("6");
-        when(proxy6.getId()).thenReturn(idValue6);
-        assertThatThrownBy(() -> loader.loadValue(manager, proxy6)).isInstanceOf(InternalException.class).
-                hasMessageContaining("multiple");
-    }
+  @Test
+  void loadValueTest() {
+    var repository = mock(ProvysRepository.class);
+    var loader = new TestObjectLoaderImpl();
+    var manager = new TestObjectManagerImpl(repository, loader);
+    var idValue5 = DtUid.valueOf("5");
+    var proxy5 = manager.getOrAddById(idValue5);
+    loader.loadValue(manager, proxy5);
+    assertThat(proxy5.getValue()).isEqualTo("Another test value");
+    var idValue6 = DtUid.valueOf("6");
+    var proxy6 = manager.getOrAddById(idValue6);
+    loader.loadValue(manager, proxy5);
+    assertThatThrownBy(() -> loader.loadValue(manager, proxy6))
+        .isInstanceOf(InternalException.class)
+        .hasMessageContaining("multiple");
+  }
 
-    @Test
-    void loadAllTest() {
-        var loader = new TestObjectLoaderImpl();
-        var manager = mock(TestObjectManagerImpl.class);
-        var proxy1 = mock(TestObjectProxyImpl.class);
-        var idValue1 = DtUid.valueOf("1");
-        when(manager.getOrAddById(idValue1)).thenReturn(proxy1);
-        var proxy5 = mock(TestObjectProxyImpl.class);
-        var idValue5 = DtUid.valueOf("5");
-        when(manager.getOrAddById(idValue5)).thenReturn(proxy5);
-        var proxy6 = mock(TestObjectProxyImpl.class);
-        var idValue6 = DtUid.valueOf("6");
-        when(manager.getOrAddById(idValue6)).thenReturn(proxy6);
-        loader.loadAll(manager);
-        verify(proxy1).setValueObject(new TestObjectValue(idValue1, "Test value"));
-        verifyNoMoreInteractions(proxy1);
-        verify(proxy5).setValueObject(new TestObjectValue(idValue5, "Another test value"));
-        verifyNoMoreInteractions(proxy5);
-    }
+  @Test
+  void loadAllTest() {
+    var repository = mock(ProvysRepository.class);
+    var loader = new TestObjectLoaderImpl();
+    var manager = new TestObjectManagerImpl(repository, loader);
+    var idValue1 = DtUid.valueOf("1");
+    var proxy1 = manager.getOrAddById(idValue1);
+    var idValue5 = DtUid.valueOf("5");
+    var proxy5 = manager.getOrAddById(idValue5);
+    loader.loadAll(manager);
+    assertThat(proxy1.getValue()).isEqualTo("Test value");
+    assertThat(proxy5.getValue()).isEqualTo("Another test value");
+  }
 }

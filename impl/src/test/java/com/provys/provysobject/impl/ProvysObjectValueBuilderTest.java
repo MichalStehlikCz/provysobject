@@ -70,6 +70,7 @@ class ProvysObjectValueBuilderTest {
     @Test
     void testToStringTest() {
         assertThat(new TestObjectValueBuilder().setId(DtUid.valueOf("10")).toString())
-                .isEqualTo("ProvysObjectValueBuilder{id=ID10}");
+                .isEqualTo("TestObjectValueBuilder{value='null', updValue=false, "
+                    + "ProvysObjectValueBuilder{id=ID10}}");
     }
 }
